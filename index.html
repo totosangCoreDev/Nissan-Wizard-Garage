@@ -1,1298 +1,1854 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>อู่พ่อมดนิสสัน | ระบบแจ้งเตือนลูกค้า</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@500;600;700;800&family=Prompt:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        ink: '#0A0B0D',
-        panel: '#15171C',
-        panel2: '#1D2027',
-        line: '#2A2E37',
-        ember: '#FF6A3D',
-        ember2: '#E8452A',
-        gold: '#F2B705',
-        steel: '#7C8798',
-        spark: '#33D6B0',
-      },
-      fontFamily: {
-        head: ['Kanit', 'sans-serif'],
-        body: ['Prompt', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'monospace'],
-      }
-    }
-  }
-}
-</script>
-
-<style>
-  html, body { background:#0A0B0D; }
-  body { font-family:'Prompt', sans-serif; }
-  h1,h2,h3,.font-head { font-family:'Kanit', sans-serif; }
-  .font-mono { font-family:'JetBrains Mono', monospace; }
-
-  ::-webkit-scrollbar{ width:5px; height:5px; }
-  ::-webkit-scrollbar-track{ background:transparent; }
-  ::-webkit-scrollbar-thumb{ background:#2A2E37; border-radius:4px; }
-
-  .app-shell{ max-width:480px; margin:0 auto; min-height:100vh; position:relative; }
-
-  /* torch glow ambient */
-  .torch-glow{
-    background:
-      radial-gradient(120% 60% at 15% -10%, rgba(255,106,61,0.18), transparent 60%),
-      radial-gradient(90% 50% at 100% 0%, rgba(242,183,5,0.10), transparent 55%);
-  }
-
-  /* ticket card with punched holes */
-  .ticket{
-    position:relative;
-    background:#15171C;
-    border:1px solid #262A32;
-    border-radius:18px;
-    overflow:hidden;
-  }
-  .ticket::before, .ticket::after{
-    content:"";
-    position:absolute;
-    width:16px; height:16px;
-    background:#0A0B0D;
-    border:1px solid #262A32;
-    border-radius:50%;
-    top:50%;
-    transform:translateY(-50%);
-    z-index:2;
-  }
-  .ticket::before{ left:-9px; }
-  .ticket::after{ right:-9px; }
-  .ticket .perf{
-    border-top:1.5px dashed #2E323C;
-  }
-
-  /* keypad button bevel */
-  .keybtn{
-    background:linear-gradient(180deg,#1D2027,#15171C);
-    border:1px solid #2A2E37;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03), 0 3px 0 rgba(0,0,0,0.35);
-  }
-  .keybtn:active{ transform:translateY(2px); box-shadow:none; }
-
-  .rivet{ box-shadow: inset 0 1px 1px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02); }
-
-  .gauge-ring circle{ transition: stroke-dasharray 0.7s ease; }
-
-  .sheet{ transition: transform 0.32s cubic-bezier(.32,.72,0,1); }
-  .sheet-hidden{ transform:translateY(100%); }
-
-  .toast-t{ transition: transform 0.3s cubic-bezier(0.68,-0.55,0.265,1.55), opacity .3s; }
-
-  .tab-underline{ transition: all .25s ease; }
-
-  input[type="date"]::-webkit-calendar-picker-indicator{ filter:invert(0.7) sepia(1) saturate(4) hue-rotate(320deg); }
-
-  @keyframes floaty{ 0%{transform:translateY(0)} 50%{transform:translateY(-5px)} 100%{transform:translateY(0)} }
-  .floaty{ animation:floaty 3.4s ease-in-out infinite; }
-
-  .safe-b{ padding-bottom: env(safe-area-inset-bottom); }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nissan Wizard Garage - ระบบแจ้งเตือนดูแลลูกค้า อู่ซ่อมรถพ่อมดนิสสันโดยช่างเก้า</title>
+    
+    <!-- Google Font: Prompt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS v3 Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        nissan: '#e60012',
+                        magic: '#f59e0b',
+                        magicglow: '#f97316',
+                        bgmain: '#070a13',
+                    },
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Custom styles for scrollbars and animations */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f59e0b;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .toast-transition {
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+    </style>
 </head>
-<body class="bg-ink text-slate-100 torch-glow">
+<body class="bg-bgmain text-slate-100 min-h-screen flex flex-col font-sans relative pb-20 md:pb-6 overflow-x-hidden">
 
-<div class="app-shell flex flex-col min-h-screen">
+    <!-- Decorative radial gradient light sources -->
+    <div class="fixed inset-0 pointer-events-none z-[-1] bg-[radial-gradient(at_0%_0%,rgba(230,0,18,0.05)_0px,transparent_50%),radial-gradient(at_100%_100%,rgba(249,115,22,0.05)_0px,transparent_50%)]"></div>
 
-  <!-- Loading Overlay -->
-  <div id="loading-overlay" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[99999] flex flex-col items-center justify-center gap-4">
-    <div class="relative w-14 h-14">
-      <div class="absolute inset-0 border-[3px] border-panel2 rounded-full"></div>
-      <div class="absolute inset-0 border-[3px] border-transparent border-t-ember border-r-gold rounded-full animate-spin"></div>
-      <i class="fa-solid fa-wand-magic-sparkles absolute inset-0 flex items-center justify-center text-gold text-sm"></i>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="hidden fixed inset-0 bg-slate-950/80 z-[99999] flex flex-col items-center justify-center gap-4">
+        <div class="w-12 h-12 border-4 border-slate-800 border-t-magic rounded-full animate-spin"></div>
+        <p id="loading-text" class="text-slate-300 text-sm">กำลังร่ายเวทมนตร์เชื่อมต่อข้อมูล...</p>
     </div>
-    <p id="loading-text" class="text-slate-300 text-xs font-mono tracking-wide">กำลังร่ายเวทมนตร์...</p>
-  </div>
 
-  <!-- Toasts -->
-  <div id="toast-container" class="fixed top-3 left-1/2 -translate-x-1/2 z-[9999] flex flex-col gap-2 w-[calc(100%-1.5rem)] max-w-[448px] px-1"></div>
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 max-w-sm w-[calc(100%-2rem)]"></div>
 
-  <!-- ================= AUTH / LOCK SCREEN ================= -->
-  <div id="auth-section" class="flex flex-col items-center justify-center flex-grow px-6 py-10">
-    <div class="w-full max-w-[320px] text-center">
-
-      <div class="relative w-20 h-20 mx-auto mb-5 floaty">
-        <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-ember to-gold rotate-6 opacity-90"></div>
-        <div class="absolute inset-0 rounded-2xl bg-panel border border-line -rotate-3 flex items-center justify-center">
-          <i class="fa-solid fa-hat-wizard text-2xl text-gold"></i>
-        </div>
-      </div>
-
-      <h1 class="font-head text-xl font-bold text-white">อู่พ่อมดนิสสัน</h1>
-      <p class="text-[11px] text-steel font-mono mt-0.5 tracking-widest uppercase">by ช่างเก้า · workshop lock</p>
-
-      <div class="mt-8 mb-2 flex items-center justify-center gap-2 text-[11px] text-steel">
-        <i class="fa-solid fa-lock-open text-gold/70"></i>
-        <span>กรอกรหัสไขกล่องเครื่องมือ 4 หลัก</span>
-      </div>
-      <p class="text-[10px] text-steel/60 mb-6 font-mono">รหัสเริ่มต้น: 1234</p>
-
-      <div class="flex justify-center gap-3.5 mb-7">
-        <div id="dot-0" class="w-3.5 h-3.5 rounded-full border-2 border-line transition duration-300"></div>
-        <div id="dot-1" class="w-3.5 h-3.5 rounded-full border-2 border-line transition duration-300"></div>
-        <div id="dot-2" class="w-3.5 h-3.5 rounded-full border-2 border-line transition duration-300"></div>
-        <div id="dot-3" class="w-3.5 h-3.5 rounded-full border-2 border-line transition duration-300"></div>
-      </div>
-
-      <div class="grid grid-cols-3 gap-3.5 max-w-[260px] mx-auto">
-        <button class="keybtn w-16 h-16 rounded-2xl text-lg font-semibold font-mono text-slate-200 active:text-gold transition" onclick="pressKey('1')">1</button>
-        <button class="keybtn w-16 h-16 rounded-2xl text-lg font-semibold font-mono text-slate-200 active:text-gold transition" onclick="pressKey('2')">2</button>
-        <button class="keybtn w-16 h-16 rounded-2xl text-lg font-semibold font-mono text-slate-200 active:text-gold transition" onclick="pressKey('3')">3</button>
-        <button class="keybtn w-16 h-16 rounded-2xl text-lg font-semibold font-mono text-slate-200 active:text-gold transition" onclick="pressKey('4')">4</button>
-        <button class="keybtn w-16 h-16 rounded-2xl text-lg font-semibold font-mono text-slate-200 active:text-gold transition" onclick="pressKey('5')">5</button>
-        <button class="keybtn w-16 h-16 rounded-2xl text-lg font-semibold font-mono text-slate-200 active:text-gold transition" onclick="pressKey('6')">6</button>
-        <button class="keybtn w-16 h-16 rounded-2xl text-lg font-semibold font-mono text-slate-200 active:text-gold transition" onclick="pressKey('7')">7</button>
-        <button class="keybtn w-16 h-16 rounded-2xl text-lg font-semibold font-mono text-slate-200 active:text-gold transition" onclick="pressKey('8')">8</button>
-        <button class="keybtn w-16 h-16 rounded-2xl text-lg font-semibold font-mono text-slate-200 active:text-gold transition" onclick="pressKey('9')">9</button>
-        <button class="keybtn w-16 h-16 rounded-2xl text-[10px] font-semibold text-ember active:text-ember2 transition" onclick="clearPin()">CLEAR</button>
-        <button class="keybtn w-16 h-16 rounded-2xl text-lg font-semibold font-mono text-slate-200 active:text-gold transition" onclick="pressKey('0')">0</button>
-        <button class="keybtn w-16 h-16 rounded-2xl text-sm text-gold active:text-white transition" onclick="pressKey('delete')"><i class="fa-solid fa-delete-left"></i></button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ================= MAIN APP (hidden until unlocked) ================= -->
-  <div id="app-main" class="hidden flex-col flex-grow">
-
-    <!-- Top bar -->
-    <header class="flex items-center justify-between px-4 pt-4 pb-3 sticky top-0 z-30 bg-ink/90 backdrop-blur-md border-b border-line/60">
-      <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-ember to-gold flex items-center justify-center text-white text-sm shadow-lg shadow-ember/10 shrink-0">
-          <i class="fa-solid fa-wand-magic-sparkles"></i>
-        </div>
-        <div class="leading-tight">
-          <h1 id="topbar-title" class="font-head text-[13px] font-semibold text-white">คิวแจ้งเตือน</h1>
-          <p class="text-[9px] text-steel font-mono uppercase tracking-wide">Nissan Wizard Garage</p>
-        </div>
-      </div>
-      <button onclick="lockAdmin()" class="w-8 h-8 rounded-lg border border-line text-ember/80 hover:bg-ember/10 flex items-center justify-center text-xs transition">
-        <i class="fa-solid fa-lock"></i>
-      </button>
-    </header>
-
-    <!-- ============ TAB: DASHBOARD ============ -->
-    <section class="tab-content hidden px-4 pt-4" id="tab-dashboard">
-
-      <!-- Odometer + gauges -->
-      <div class="grid grid-cols-2 gap-3 mb-4">
-        <div class="ticket col-span-2 p-4 flex items-center justify-between">
-          <div>
-            <p class="text-[10px] text-steel font-mono uppercase tracking-wider mb-1">รายการคิวทั้งหมด</p>
-            <p id="stat-total" class="font-mono text-3xl font-bold text-white tabular-nums">000</p>
-          </div>
-          <div class="text-right">
-            <div class="w-11 h-11 rounded-xl bg-gold/10 border border-gold/25 flex items-center justify-center text-gold">
-              <i class="fa-solid fa-gauge-high"></i>
+    <div class="w-full max-w-6xl mx-auto px-4 flex-grow flex flex-col">
+        
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 py-4 border-b border-slate-800/80 mb-6 shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-rose-600 to-amber-500 rounded-xl flex items-center justify-center text-white text-lg shadow-lg shadow-rose-600/10 animate-float shrink-0">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold text-white tracking-wide">
+                        อู่ซ่อมรถพ่อมดนิสสัน <span class="text-xs sm:text-sm font-medium text-amber-400">| Nissan Wizard Garage</span>
+                    </h1>
+                    <p class="text-[10px] sm:text-xs text-slate-400">ระบบติดตามดูแลแจ้งเตือนลูกค้า โดยช่างเก้า | Customer Reminder System</p>
+                </div>
             </div>
-          </div>
-        </div>
+            
+            <!-- Navigation (Desktop Only) -->
+            <nav id="main-nav" class="hidden md:flex items-center gap-2">
+                <button class="nav-btn active flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/50 transition cursor-pointer" onclick="switchTab('dashboard')">
+                    <i class="fa-solid fa-list-check"></i> คิวแจ้งเตือน
+                </button>
+                <button class="nav-btn flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/50 transition cursor-pointer" onclick="switchTab('register')">
+                    <i class="fa-solid fa-user-plus"></i> ลงทะเบียนคิวใหม่
+                </button>
+                <button class="nav-btn flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/50 transition cursor-pointer" onclick="switchTab('settings')">
+                    <i class="fa-solid fa-sliders"></i> ตั้งค่า
+                </button>
+                <button class="nav-btn flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-rose-950/40 text-rose-500 hover:bg-rose-950/20 transition cursor-pointer" onclick="lockAdmin()">
+                    <i class="fa-solid fa-lock"></i> ล็อคระบบ
+                </button>
+            </nav>
+        </header>
 
-        <div class="ticket p-3.5 flex flex-col items-center">
-          <svg viewBox="0 0 80 80" class="w-16 h-16 gauge-ring -rotate-90">
-            <circle cx="40" cy="40" r="32" fill="none" stroke="#262A32" stroke-width="7"/>
-            <circle id="gauge-pending" cx="40" cy="40" r="32" fill="none" stroke="#F2B705" stroke-width="7" stroke-linecap="round" stroke-dasharray="0 201"/>
-          </svg>
-          <p id="stat-pending" class="font-mono text-sm font-bold text-gold -mt-11">0</p>
-          <p class="text-[9px] text-steel mt-6 uppercase tracking-wide">รอดำเนินการ</p>
-        </div>
+        <!-- Bottom Navigation Bar (Mobile Only) -->
+        <nav id="mobile-nav" class="hidden md:hidden fixed bottom-0 left-0 right-0 bg-slate-950/95 backdrop-blur-md border-t border-slate-800/80 py-2.5 px-4 flex justify-around items-center z-[999] shadow-2xl">
+            <button class="mobile-nav-btn active flex flex-col items-center gap-1 text-[10px] text-slate-400 font-medium hover:text-white transition cursor-pointer" onclick="switchTab('dashboard')">
+                <i class="fa-solid fa-list-check text-lg"></i>
+                <span>คิวงาน</span>
+            </button>
+            <button class="mobile-nav-btn flex flex-col items-center gap-1 text-[10px] text-slate-400 font-medium hover:text-white transition cursor-pointer" onclick="switchTab('register')">
+                <i class="fa-solid fa-user-plus text-lg"></i>
+                <span>บันทึกคิว</span>
+            </button>
+            <button class="mobile-nav-btn flex flex-col items-center gap-1 text-[10px] text-slate-400 font-medium hover:text-white transition cursor-pointer" onclick="switchTab('settings')">
+                <i class="fa-solid fa-sliders text-lg"></i>
+                <span>ตั้งค่า</span>
+            </button>
+            <button class="mobile-nav-btn flex flex-col items-center gap-1 text-[10px] text-rose-500 font-medium hover:text-rose-400 transition cursor-pointer" onclick="lockAdmin()">
+                <i class="fa-solid fa-lock text-lg"></i>
+                <span>ล็อค</span>
+            </button>
+        </nav>
 
-        <div class="ticket p-3.5 flex flex-col items-center">
-          <svg viewBox="0 0 80 80" class="w-16 h-16 gauge-ring -rotate-90">
-            <circle cx="40" cy="40" r="32" fill="none" stroke="#262A32" stroke-width="7"/>
-            <circle id="gauge-sent" cx="40" cy="40" r="32" fill="none" stroke="#33D6B0" stroke-width="7" stroke-linecap="round" stroke-dasharray="0 201"/>
-          </svg>
-          <p id="stat-sent" class="font-mono text-sm font-bold text-spark -mt-11">0</p>
-          <p class="text-[9px] text-steel mt-6 uppercase tracking-wide">ส่งแล้ว</p>
-        </div>
-
-        <div class="ticket col-span-2 p-3.5 flex items-center justify-between">
-          <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-lg bg-ember/10 border border-ember/25 flex items-center justify-center text-ember text-xs">
-              <i class="fa-solid fa-bell"></i>
+        <!-- --- 1. หน้าจอปลดล็อครหัสผ่าน (Unlock Screen) --- -->
+        <div id="auth-section" class="flex flex-col items-center justify-center flex-grow py-8 px-4">
+            <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-2xl p-6 sm:p-8 w-full max-w-[340px] text-center shadow-xl shadow-amber-500/5 border-t-amber-500/30">
+                <div class="w-12 h-12 bg-gradient-to-br from-rose-600 to-amber-500 rounded-xl flex items-center justify-center text-white text-xl mx-auto mb-4 shadow-lg shadow-rose-600/10 animate-float">
+                    <i class="fa-solid fa-hat-wizard"></i>
+                </div>
+                <h2 class="text-base sm:text-lg font-bold text-amber-500 mb-1">กรอกรหัสผ่าน แอดมิน</h2>
+                <p class="text-[11px] sm:text-xs text-slate-400 mb-5">รหัส PIN เริ่มต้นระบบคือ: 1234</p>
+                
+                <div class="flex justify-center gap-3 mb-6">
+                    <div id="dot-0" class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 transition duration-300"></div>
+                    <div id="dot-1" class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 transition duration-300"></div>
+                    <div id="dot-2" class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 transition duration-300"></div>
+                    <div id="dot-3" class="w-3.5 h-3.5 rounded-full border-2 border-slate-700 transition duration-300"></div>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-3 max-w-[220px] mx-auto">
+                    <button class="w-12.5 h-12.5 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-800 text-base font-semibold flex items-center justify-center active:scale-95 transition cursor-pointer" onclick="pressKey('1')">1</button>
+                    <button class="w-12.5 h-12.5 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-800 text-base font-semibold flex items-center justify-center active:scale-95 transition cursor-pointer" onclick="pressKey('2')">2</button>
+                    <button class="w-12.5 h-12.5 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-800 text-base font-semibold flex items-center justify-center active:scale-95 transition cursor-pointer" onclick="pressKey('3')">3</button>
+                    <button class="w-12.5 h-12.5 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-800 text-base font-semibold flex items-center justify-center active:scale-95 transition cursor-pointer" onclick="pressKey('4')">4</button>
+                    <button class="w-12.5 h-12.5 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-800 text-base font-semibold flex items-center justify-center active:scale-95 transition cursor-pointer" onclick="pressKey('5')">5</button>
+                    <button class="w-12.5 h-12.5 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-800 text-base font-semibold flex items-center justify-center active:scale-95 transition cursor-pointer" onclick="pressKey('6')">6</button>
+                    <button class="w-12.5 h-12.5 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-800 text-base font-semibold flex items-center justify-center active:scale-95 transition cursor-pointer" onclick="pressKey('7')">7</button>
+                    <button class="w-12.5 h-12.5 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-800 text-base font-semibold flex items-center justify-center active:scale-95 transition cursor-pointer" onclick="pressKey('8')">8</button>
+                    <button class="w-12.5 h-12.5 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-800 text-base font-semibold flex items-center justify-center active:scale-95 transition cursor-pointer" onclick="pressKey('9')">9</button>
+                    <button class="w-12.5 h-12.5 rounded-full bg-slate-800/20 hover:bg-slate-800/50 border border-slate-800/30 text-rose-500 text-[10px] font-semibold flex items-center justify-center active:scale-95 transition cursor-pointer" onclick="clearPin()">Clear</button>
+                    <button class="w-12.5 h-12.5 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-slate-800 text-base font-semibold flex items-center justify-center active:scale-95 transition cursor-pointer" onclick="pressKey('0')">0</button>
+                    <button class="w-12.5 h-12.5 rounded-full bg-slate-800/20 hover:bg-slate-800/50 border border-slate-800/30 text-amber-500 text-sm flex items-center justify-center active:scale-95 transition cursor-pointer" onclick="pressKey('delete')"><i class="fa-solid fa-delete-left"></i></button>
+                </div>
             </div>
-            <p class="text-[11px] text-slate-300">ครบกำหนดส่งวันนี้ / เลยกำหนด</p>
-          </div>
-          <p id="stat-today" class="font-mono text-lg font-bold text-ember">0</p>
         </div>
-      </div>
 
-      <!-- Search -->
-      <div class="relative mb-3">
-        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-steel text-xs"></i>
-        <input type="text" class="w-full bg-panel border border-line rounded-xl pl-9 pr-3.5 py-3 text-xs text-slate-200 placeholder-steel/70 focus:border-ember outline-none transition" id="search-query" placeholder="ค้นหา ชื่อ / เบอร์โทร / รุ่นรถ / บริการ..." oninput="renderSchedules()">
-      </div>
-
-      <!-- Filters -->
-      <div class="grid grid-cols-2 gap-2 mb-3">
-        <select class="bg-panel border border-line text-slate-200 text-[11px] px-3 py-2.5 rounded-xl outline-none focus:border-ember" id="filter-status" onchange="renderSchedules()">
-          <option value="all">สถานะทั้งหมด</option>
-          <option value="Pending">รอดำเนินการ</option>
-          <option value="Sent">ส่งแล้ว</option>
-        </select>
-        <select class="bg-panel border border-line text-slate-200 text-[11px] px-3 py-2.5 rounded-xl outline-none focus:border-ember" id="filter-category" onchange="renderSchedules()">
-          <option value="all">ทุกประเภทงาน</option>
-          <option value="เช็คระยะ">เช็คระยะ</option>
-          <option value="ซ่อมทั่วไป">ซ่อมทั่วไป</option>
-          <option value="เคลมสี/ตัวถัง">เคลมสี/ตัวถัง</option>
-          <option value="ระบบแอร์">ระบบแอร์</option>
-          <option value="ด่วน/ฉุกเฉิน">ด่วน/ฉุกเฉิน</option>
-          <option value="ทั่วไป/อื่นๆ">ทั่วไป/อื่นๆ</option>
-        </select>
-      </div>
-
-      <div class="grid grid-cols-3 gap-2 mb-5">
-        <button class="flex items-center justify-center gap-1 py-2.5 text-[10px] font-medium rounded-xl border border-line text-steel hover:text-white transition" onclick="loadAllData(false, true)">
-          <i class="fa-solid fa-rotate" id="icon-refresh"></i> รีเฟรช
-        </button>
-        <button class="flex items-center justify-center gap-1 py-2.5 text-[10px] font-medium rounded-xl border border-spark/25 bg-spark/5 text-spark transition" onclick="openModal('import-modal')">
-          <i class="fa-solid fa-file-import"></i> นำเข้า
-        </button>
-        <button class="flex items-center justify-center gap-1 py-2.5 text-[10px] font-medium rounded-xl border border-spark/25 bg-spark/5 text-spark transition" onclick="exportToCSV()">
-          <i class="fa-solid fa-file-export"></i> ส่งออก
-        </button>
-      </div>
-
-      <!-- Schedule ticket list -->
-      <div id="schedules-cards-div" class="flex flex-col gap-3.5 pb-6">
-        <div class="ticket p-8 text-center text-steel">
-          <i class="fa-solid fa-circle-nodes text-2xl mb-3 block"></i>
-          <p class="text-xs">ไม่พบข้อมูล กรุณาตั้งค่า GAS API แล้วรีเฟรช</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ TAB: REGISTER ============ -->
-    <section class="tab-content hidden px-4 pt-4 pb-6" id="tab-register">
-      <div class="ticket p-4 sm:p-5 mb-4">
-        <h2 class="font-head text-sm font-semibold text-gold mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-file-pen"></i> เปิดใบนัดบริการใหม่
-        </h2>
-        <form id="new-schedule-form" onsubmit="submitNewSchedule(event)" class="space-y-3.5">
-          <div>
-            <label class="block text-[11px] font-semibold text-steel mb-1.5">ชื่อ - สกุล ลูกค้า <span class="text-ember">*</span></label>
-            <input type="text" class="w-full bg-ink border border-line rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-steel/60 focus:border-ember outline-none transition" id="cust-name" placeholder="คุณวรรณวิสา ดีเลิศ" required oninput="updateLivePreview()">
-          </div>
-          <div>
-            <label class="block text-[11px] font-semibold text-steel mb-1.5">อีเมลลูกค้า <span class="text-ember">*</span></label>
-            <input type="email" class="w-full bg-ink border border-line rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-steel/60 focus:border-ember outline-none transition" id="cust-email" placeholder="customer@gmail.com" required oninput="updateLivePreview()">
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-[11px] font-semibold text-steel mb-1.5">เบอร์โทร</label>
-              <input type="text" class="w-full bg-ink border border-line rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-steel/60 focus:border-ember outline-none transition" id="cust-phone" placeholder="081-234-5678" oninput="updateLivePreview()">
+        <!-- --- 2. หน้าหลักคิวงานแอดมิน (Dashboard Tab) --- -->
+        <div class="tab-content hidden" id="tab-dashboard">
+            
+            <!-- การ์ดตัวชี้วัด (Stats Cards) -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-xl p-3 sm:p-4 flex justify-between items-center hover:bg-slate-900 hover:border-amber-500/20 transition duration-300">
+                    <div>
+                        <h3 class="text-[10px] sm:text-xs text-slate-400 font-medium mb-1">รายการคิวทั้งหมด</h3>
+                        <p id="stat-total" class="text-lg sm:text-xl font-bold text-white">0</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 text-sm shrink-0">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-xl p-3 sm:p-4 flex justify-between items-center hover:bg-slate-900 hover:border-amber-500/20 transition duration-300">
+                    <div>
+                        <h3 class="text-[10px] sm:text-xs text-slate-400 font-medium mb-1">รอดำเนินการส่ง</h3>
+                        <p id="stat-pending" class="text-lg sm:text-xl font-bold text-white">0</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-sm shrink-0">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-xl p-3 sm:p-4 flex justify-between items-center hover:bg-slate-900 hover:border-amber-500/20 transition duration-300">
+                    <div>
+                        <h3 class="text-[10px] sm:text-xs text-slate-400 font-medium mb-1">ส่งแจ้งเตือนแล้ว</h3>
+                        <p id="stat-sent" class="text-lg sm:text-xl font-bold text-white">0</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 text-sm shrink-0">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </div>
+                </div>
+                <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-xl p-3 sm:p-4 flex justify-between items-center hover:bg-slate-900 hover:border-amber-500/20 transition duration-300">
+                    <div>
+                        <h3 class="text-[10px] sm:text-xs text-slate-400 font-medium mb-1">แจ้งวันนี้/เลยกำหนด</h3>
+                        <p id="stat-today" class="text-lg sm:text-xl font-bold text-white">0</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 text-sm shrink-0">
+                        <i class="fa-solid fa-bell"></i>
+                    </div>
+                </div>
             </div>
-            <div>
-              <label class="block text-[11px] font-semibold text-steel mb-1.5">รุ่นรถ/ทะเบียน</label>
-              <input type="text" class="w-full bg-ink border border-line rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-steel/60 focus:border-ember outline-none transition" id="cust-car" placeholder="Almera กข-1234" oninput="updateLivePreview()">
+
+            <!-- ค้นหาและตัวกรอง -->
+            <div class="flex flex-col gap-3 mb-6">
+                <!-- Search Box -->
+                <div class="relative w-full">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs sm:text-sm"></i>
+                    <input type="text" class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-9 pr-4 py-2 text-xs sm:text-sm text-slate-200 placeholder-slate-500 focus:border-amber-500 outline-none transition" id="search-query" placeholder="ค้นหาด้วย ชื่อลูกค้า, เบอร์โทร, รุ่นรถ หรือเรื่องที่จะให้บริการ..." oninput="renderSchedules()">
+                </div>
+                
+                <div class="flex flex-col md:flex-row gap-3 justify-between items-stretch md:items-center">
+                    <!-- Filters -->
+                    <div class="grid grid-cols-2 sm:flex sm:items-center gap-2">
+                        <select class="bg-slate-900 border border-slate-800 text-slate-200 text-xs sm:text-sm px-3 py-2 rounded-lg outline-none cursor-pointer focus:border-amber-500 transition" id="filter-status" onchange="renderSchedules()">
+                            <option value="all">แสดงสถานะทั้งหมด</option>
+                            <option value="Pending">รอดำเนินการ (Pending)</option>
+                            <option value="Sent">ส่งแล้ว (Sent)</option>
+                        </select>
+                        <select class="bg-slate-900 border border-slate-800 text-slate-200 text-xs sm:text-sm px-3 py-2 rounded-lg outline-none cursor-pointer focus:border-amber-500 transition" id="filter-category" onchange="renderSchedules()">
+                            <option value="all">แสดงทุกประเภทงาน</option>
+                            <option value="เช็คระยะ">เช็คระยะ</option>
+                            <option value="ซ่อมทั่วไป">ซ่อมทั่วไป</option>
+                            <option value="เคลมสี/ตัวถัง">เคลมสี/ตัวถัง</option>
+                            <option value="ระบบแอร์">ระบบแอร์</option>
+                            <option value="ด่วน/ฉุกเฉิน">ด่วน/ฉุกเฉิน</option>
+                            <option value="ทั่วไป/อื่นๆ">ทั่วไป/อื่นๆ</option>
+                        </select>
+                    </div>
+                    
+                    <!-- CSV / Refresh buttons -->
+                    <div class="grid grid-cols-3 sm:flex items-center gap-2">
+                        <button class="flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/50 transition cursor-pointer" onclick="loadAllData(false, true)">
+                            <i class="fa-solid fa-rotate" id="icon-refresh"></i> รีเฟรช
+                        </button>
+                        <button class="flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg border border-blue-900/40 bg-blue-500/5 text-blue-400 hover:bg-blue-500 hover:text-black transition cursor-pointer" onclick="openModal('import-modal')">
+                            <i class="fa-solid fa-file-import"></i> นำเข้า CSV
+                        </button>
+                        <button class="flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-medium rounded-lg border border-blue-900/40 bg-blue-500/5 text-blue-400 hover:bg-blue-500 hover:text-black transition cursor-pointer" onclick="exportToCSV()">
+                            <i class="fa-solid fa-file-export"></i> ส่งออก CSV
+                        </button>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div>
-            <label class="block text-[11px] font-semibold text-steel mb-1.5">เรื่องที่จะเชิญเข้าศูนย์ <span class="text-ember">*</span></label>
-            <input type="text" class="w-full bg-ink border border-line rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-steel/60 focus:border-ember outline-none transition" id="service-topic" list="common-topics" placeholder="เปลี่ยนน้ำมันเครื่อง..." required oninput="updateLivePreview()">
-            <datalist id="common-topics">
-              <option value="เปลี่ยนถ่ายน้ำมันเครื่อง & กรองเครื่อง">
-              <option value="ตรวจสอบระยะการใช้งาน 50,000 กิโลเมตร">
-              <option value="ตรวจสอบระยะการใช้งาน 100,000 กิโลเมตร">
-              <option value="เช็คระบบเบรค แฟลชชิ่งน้ำมันเบรค">
-              <option value="เปลี่ยนสายพานและตรวจเช็คห้องเครื่อง">
-              <option value="ตรวจสภาพทั่วไปก่อนเดินทางไกล">
-              <option value="ตรวจเช็คระบบแอร์ ล้างตู้แอร์">
-            </datalist>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-[11px] font-semibold text-steel mb-1.5">ประเภทงาน <span class="text-ember">*</span></label>
-              <select class="w-full bg-ink border border-line rounded-xl px-3 py-2.5 text-xs text-white focus:border-ember outline-none transition" id="service-cat" required onchange="updateLivePreview()">
-                <option value="ทั่วไป/อื่นๆ" selected>ทั่วไป/อื่นๆ</option>
-                <option value="เช็คระยะ">เช็คระยะ</option>
-                <option value="ซ่อมทั่วไป">ซ่อมทั่วไป</option>
-                <option value="เคลมสี/ตัวถัง">เคลมสี/ตัวถัง</option>
-                <option value="ระบบแอร์">ระบบแอร์</option>
-                <option value="ด่วน/ฉุกเฉิน">ด่วน/ฉุกเฉิน</option>
-              </select>
+
+            <!-- ตารางแสดงผลคิวงาน (Desktop Only) -->
+            <div class="hidden md:block bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-xl overflow-hidden mb-6">
+                <table class="w-full text-left text-xs sm:text-sm">
+                    <thead class="bg-slate-950/40 text-slate-400 border-b border-slate-800">
+                        <tr>
+                            <th class="px-5 py-3.5 font-medium">ชื่อลูกค้า / ข้อมูลติดต่อ</th>
+                            <th class="px-5 py-3.5 font-medium">ข้อมูลรถยนต์</th>
+                            <th class="px-5 py-3.5 font-medium">บริการที่จะได้เข้าศูนย์</th>
+                            <th class="px-5 py-3.5 font-medium w-[140px]">วันนัดบริการ</th>
+                            <th class="px-5 py-3.5 font-medium w-[150px]">วันส่งแจ้งเตือน</th>
+                            <th class="px-5 py-3.5 font-medium w-[120px]">สถานะส่ง</th>
+                            <th class="px-5 py-3.5 font-medium w-[150px] text-center">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedules-tbody" class="divide-y divide-slate-800/40">
+                        <tr>
+                            <td colspan="7" class="px-5 py-12 text-center text-slate-500">
+                                <i class="fa-solid fa-circle-nodes text-3xl mb-3 block"></i>
+                                <p>ไม่พบข้อมูลตารางคิวงาน กรุณาตั้งค่า GAS API และรีเฟรชข้อมูล</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div>
-              <label class="block text-[11px] font-semibold text-steel mb-1.5">วันครบกำหนดนัด <span class="text-ember">*</span></label>
-              <input type="date" class="w-full bg-ink border border-line rounded-xl px-3 py-2.5 text-xs text-white focus:border-ember outline-none transition" id="target-date" required onchange="updateLivePreview()">
+
+            <!-- การ์ดแสดงผลคิวงานสำหรับมือถือ (Mobile Only) -->
+            <div id="schedules-cards-div" class="md:hidden flex flex-col gap-3 mb-6">
+                <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-8 text-center text-slate-500">
+                    <i class="fa-solid fa-circle-nodes text-3xl mb-3 block"></i>
+                    <p>ไม่พบข้อมูลตารางคิวงาน กรุณาตั้งค่า GAS API และรีเฟรชข้อมูล</p>
+                </div>
             </div>
-          </div>
-          <div>
-            <label class="block text-[11px] font-semibold text-steel mb-1.5">แจ้งเตือนล่วงหน้าก่อนวันนัด</label>
-            <div class="grid grid-cols-2 gap-3">
-              <input type="number" class="w-full bg-ink border border-line rounded-xl px-3.5 py-2.5 text-xs text-white focus:border-ember outline-none transition" id="notice-value" value="7" min="0" oninput="updateLivePreview()">
-              <select class="w-full bg-ink border border-line rounded-xl px-3 py-2.5 text-xs text-white focus:border-ember outline-none transition" id="notice-unit" onchange="updateLivePreview()">
-                <option value="days" selected>วัน (Days)</option>
-                <option value="months">เดือน (Months)</option>
-              </select>
+        </div>
+
+        <!-- --- 3. หน้าจอลงทะเบียนคิวใหม่ (Register Tab) --- -->
+        <div class="tab-content hidden" id="tab-register">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                
+                <!-- ฟอร์มลงทะเบียน -->
+                <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 sm:p-6 shadow-lg shadow-amber-500/5">
+                    <h2 class="text-base sm:text-lg font-bold text-amber-500 pb-3 border-b border-slate-800 mb-5 flex items-center gap-2">
+                        <i class="fa-solid fa-user-plus"></i> บันทึกข้อมูลคิวบริการลูกค้าใหม่
+                    </h2>
+                    <form id="new-schedule-form" onsubmit="submitNewSchedule(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">ชื่อ - สกุล ลูกค้า <span class="text-rose-500">*</span></label>
+                            <input type="text" class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-600 focus:border-amber-500 outline-none transition" id="cust-name" placeholder="ตัวอย่าง: คุณวรรณวิสา ดีเลิศ" required oninput="updateLivePreview()">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">อีเมลลูกค้า (เพื่อใช้ส่งเมลติดตาม) <span class="text-rose-500">*</span></label>
+                            <input type="email" class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-600 focus:border-amber-500 outline-none transition" id="cust-email" placeholder="ตัวอย่าง: customer@gmail.com" required oninput="updateLivePreview()">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1.5">เบอร์โทรศัพท์ติดต่อ</label>
+                                <input type="text" class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-600 focus:border-amber-500 outline-none transition" id="cust-phone" placeholder="ตัวอย่าง: 081-234-5678" oninput="updateLivePreview()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1.5">รุ่นรถ / ทะเบียนรถ</label>
+                                <input type="text" class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-600 focus:border-amber-500 outline-none transition" id="cust-car" placeholder="ตัวอย่าง: Nissan Almera กข-1234 กทม." oninput="updateLivePreview()">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">เรื่องที่จะเชิญชวนเข้าศูนย์บริการ <span class="text-rose-500">*</span></label>
+                            <input type="text" class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-600 focus:border-amber-500 outline-none transition" id="service-topic" list="common-topics" placeholder="เลือกหรือพิมพ์ เช่น เปลี่ยนน้ำมันเครื่อง/ตรวจเช็คระยะ 50,000 กม." required oninput="updateLivePreview()">
+                            <datalist id="common-topics">
+                                <option value="เปลี่ยนถ่ายน้ำมันเครื่อง & กรองเครื่อง">
+                                <option value="ตรวจสอบระยะการใช้งาน 50,000 กิโลเมตร">
+                                <option value="ตรวจสอบระยะการใช้งาน 100,000 กิโลเมตร">
+                                <option value="เช็คระบบเบรค แฟลชชิ่งน้ำมันเบรค">
+                                <option value="เปลี่ยนสายพานและตรวจเช็คห้องเครื่อง">
+                                <option value="ตรวจสภาพทั่วไปก่อนเดินทางไกล">
+                                <option value="ตรวจเช็คระบบแอร์ ล้างตู้แอร์">
+                            </datalist>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1.5">ประเภทงานบริการ <span class="text-rose-500">*</span></label>
+                                <select class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white focus:border-amber-500 outline-none transition cursor-pointer" id="service-cat" required onchange="updateLivePreview()">
+                                    <option value="ทั่วไป/อื่นๆ" selected>ทั่วไป/อื่นๆ</option>
+                                    <option value="เช็คระยะ">เช็คระยะ (บำรุงรักษา)</option>
+                                    <option value="ซ่อมทั่วไป">ซ่อมทั่วไป (เครื่องยนต์/ไฟ)</option>
+                                    <option value="เคลมสี/ตัวถัง">เคลมสี/ตัวถัง</option>
+                                    <option value="ระบบแอร์">ระบบแอร์</option>
+                                    <option value="ด่วน/ฉุกเฉิน">ด่วน/ฉุกเฉิน</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1.5">วันเดือนปี คาดครบกำหนดนัด <span class="text-rose-500">*</span></label>
+                                <input type="date" class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white focus:border-amber-500 outline-none transition cursor-pointer" id="target-date" required onchange="updateLivePreview()">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">ตั้งแจ้งเตือนล่วงหน้าก่อนวันนัดบริการ</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <input type="number" class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white focus:border-amber-500 outline-none transition" id="notice-value" value="7" min="0" placeholder="ระบุจำนวน" oninput="updateLivePreview()">
+                                <select class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white focus:border-amber-500 outline-none transition cursor-pointer" id="notice-unit" onchange="updateLivePreview()">
+                                    <option value="days" selected>วัน (Days)</option>
+                                    <option value="months">เดือน (Months)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-rose-600 to-amber-500 hover:brightness-110 active:scale-[0.99] text-white py-3 rounded-lg text-sm font-bold shadow-lg shadow-rose-600/10 transition mt-2 flex items-center justify-center gap-2 cursor-pointer">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> ร่ายมนตร์บันทึกตารางคิวบริการ
+                        </button>
+                    </form>
+                </div>
+
+                <!-- ฝั่งพรีวิวความคืบหน้าและรูปแบบอีเมลที่ระบบจะส่งจริง -->
+                <div class="bg-slate-900/40 border border-slate-800/60 rounded-2xl p-5 sm:p-6 space-y-4">
+                    <div class="text-xs text-slate-400 font-semibold flex items-center gap-1.5 pb-2.5 border-b border-slate-800/60">
+                        <i class="fa-solid fa-eye"></i> ภาพตัวอย่างการจัดส่งอีเมลและวันนัดอัตโนมัติ
+                    </div>
+                    
+                    <div id="preview-send-date-alert" class="bg-amber-500/10 border border-amber-500/20 text-amber-500 py-3 px-4 rounded-lg text-xs sm:text-sm text-center font-medium flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-clock"></i> ระบบจะส่งแจ้งเตือนลูกค้าในวันที่: -
+                    </div>
+
+                    <div class="bg-slate-950 border border-slate-800/80 rounded-xl p-4 space-y-3">
+                        <div id="preview-subject-text" class="text-xs sm:text-sm font-bold text-slate-200">
+                            Subject: แจ้งเตือนครบรอบบริการ...
+                        </div>
+                        <div id="preview-body-text" class="text-xs text-slate-400 whitespace-pre-wrap leading-relaxed">
+                            เรียนคุณ...
+                        </div>
+                    </div>
+                </div>
+
             </div>
-          </div>
-
-          <button type="submit" class="w-full bg-gradient-to-r from-ember to-gold hover:brightness-110 active:scale-[0.98] text-ink py-3.5 rounded-xl text-xs font-bold shadow-lg shadow-ember/15 transition flex items-center justify-center gap-2 mt-1">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> บันทึกใบนัดบริการ
-          </button>
-        </form>
-      </div>
-
-      <!-- Live preview -->
-      <div class="ticket p-4 sm:p-5">
-        <div class="flex items-center justify-between mb-3">
-          <h3 class="text-[11px] font-semibold text-steel flex items-center gap-1.5 uppercase tracking-wide"><i class="fa-solid fa-eye"></i> ตัวอย่างอีเมลที่จะส่ง</h3>
         </div>
-        <div id="preview-send-date-alert" class="bg-gold/10 border border-gold/25 text-gold py-2.5 px-3.5 rounded-xl text-[11px] text-center font-medium flex items-center justify-center gap-2 mb-3">
-          <i class="fa-solid fa-clock"></i> จะส่งแจ้งเตือนวันที่: -
-        </div>
-        <div class="bg-ink border border-line rounded-xl p-3.5 space-y-2 perf">
-          <div id="preview-subject-text" class="text-[11px] font-bold text-slate-200">Subject: แจ้งเตือนครบรอบบริการ...</div>
-          <div id="preview-body-text" class="text-[10.5px] text-steel whitespace-pre-wrap leading-relaxed"></div>
-        </div>
-      </div>
-    </section>
 
-    <!-- ============ TAB: SETTINGS ============ -->
-    <section class="tab-content hidden px-4 pt-4 pb-6 space-y-4" id="tab-settings">
+        <!-- --- 4. หน้าจอตั้งค่าระบบ (Settings Tab) --- -->
+        <div class="tab-content hidden" id="tab-settings">
+            <div class="max-w-2xl mx-auto space-y-6">
+                
+                <!-- ตั้งค่าการเชื่อมต่อ API -->
+                <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 sm:p-6 shadow-lg shadow-amber-500/5">
+                    <h2 class="text-base sm:text-lg font-bold text-amber-500 pb-3 border-b border-slate-800 mb-5 flex items-center gap-2">
+                        <i class="fa-solid fa-gears"></i> การตั้งค่าการเชื่อมต่อ API & ความปลอดภัย
+                    </h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">Google Apps Script Web App URL <span class="text-rose-500">*</span></label>
+                            <input type="url" class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-600 focus:border-amber-500 outline-none transition" id="settings-gas-url" placeholder="https://script.google.com/macros/s/.../exec">
+                            <p class="text-[10px] text-slate-500 mt-1.5">
+                                ก๊อปปี้ Web App URL ที่ได้จากการ Deploy ใน Google Apps Script มาใส่ตรงนี้เพื่อเชื่อมต่อระบบ
+                            </p>
+                        </div>
 
-      <div class="ticket p-4 sm:p-5">
-        <h2 class="font-head text-sm font-semibold text-gold mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-gears"></i> การเชื่อมต่อ & ความปลอดภัย
-        </h2>
-        <div class="space-y-3.5">
-          <div>
-            <label class="block text-[11px] font-semibold text-steel mb-1.5">Google Apps Script Web App URL <span class="text-ember">*</span></label>
-            <input type="url" class="w-full bg-ink border border-line rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-steel/60 focus:border-ember outline-none transition font-mono" id="settings-gas-url" placeholder="https://script.google.com/macros/s/.../exec">
-            <p class="text-[10px] text-steel/70 mt-1.5 leading-relaxed">วาง Web App URL ที่ Deploy จาก Google Apps Script</p>
-          </div>
-          <div>
-            <label class="block text-[11px] font-semibold text-steel mb-1.5">ตั้งรหัสผ่านใหม่ (Admin PIN)</label>
-            <input type="password" class="w-full bg-ink border border-line rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-steel/60 focus:border-ember outline-none transition font-mono" id="settings-admin-pin" placeholder="1234">
-          </div>
-          <button type="button" class="w-full bg-panel2 hover:bg-line text-slate-200 border border-line py-2.5 rounded-xl text-[11px] font-bold transition flex items-center justify-center gap-1.5" onclick="testConnection()">
-            <i class="fa-solid fa-plug"></i> ทดสอบการเชื่อมต่อ API
-          </button>
-        </div>
-      </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1.5">ตั้งรหัสผ่านใหม่ (Admin PIN)</label>
+                                <input type="password" class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-600 focus:border-amber-500 outline-none transition" id="settings-admin-pin" placeholder="กรอกเฉพาะตัวเลข เช่น 1234">
+                            </div>
+                            <div class="flex items-end">
+                                <button type="button" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 py-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer" onclick="testConnection()">
+                                    <i class="fa-solid fa-plug"></i> ทดสอบการเชื่อมต่อ API
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-      <div class="ticket p-4 sm:p-5">
-        <h2 class="font-head text-sm font-semibold text-gold mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-signature"></i> ข้อมูลอู่ & เทมเพลตอีเมล
-        </h2>
-        <div class="space-y-3.5">
-          <div class="grid grid-cols-1 gap-3.5">
-            <div>
-              <label class="block text-[11px] font-semibold text-steel mb-1.5">ชื่อ-สกุล เจ้าของอู่</label>
-              <input type="text" class="w-full bg-ink border border-line rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-steel/60 focus:border-ember outline-none transition" id="settings-shop-owner" placeholder="ช่างเก้า พ่อมดนิสสัน" oninput="updateLivePreview()">
+                <!-- ตั้งค่าข้อมูลอู่และข้อความส่งหาลูกค้า -->
+                <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-2xl p-5 sm:p-6 shadow-lg shadow-amber-500/5">
+                    <h2 class="text-base sm:text-lg font-bold text-amber-500 pb-3 border-b border-slate-800 mb-5 flex items-center gap-2">
+                        <i class="fa-solid fa-signature"></i> ข้อมูลอู่รถ และเทมเพลตอีเมล (Template)
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1.5">ชื่อ-สกุล เจ้าของอู่ (แนบท้ายอีเมล)</label>
+                                <input type="text" class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-600 focus:border-amber-500 outline-none transition" id="settings-shop-owner" placeholder="ตัวอย่าง: ช่างเก้า พ่อมดนิสสัน" oninput="updateLivePreview()">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 mb-1.5">เบอร์โทรศัพท์เจ้าของอู่ (ติดต่อกลับ)</label>
+                                <input type="text" class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-600 focus:border-amber-500 outline-none transition" id="settings-shop-phone" placeholder="ตัวอย่าง: 081-234-5678" oninput="updateLivePreview()">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">หัวข้อจดหมายเมล (Subject Template)</label>
+                            <input type="text" class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-600 focus:border-amber-500 outline-none transition" id="settings-email-subject" placeholder="แจ้งเตือนครบรอบบริการ..." oninput="updateLivePreview()">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1.5">เนื้อหาอีเมล (Email Body Template)</label>
+                            <textarea class="w-full bg-slate-950 border border-slate-800/80 rounded-lg px-3.5 py-2.5 text-sm text-white placeholder-slate-600 focus:border-amber-500 outline-none transition leading-relaxed" id="settings-email-body" rows="9" placeholder="เรียนคุณ [CUSTOMER_NAME]..." oninput="updateLivePreview()"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] sm:text-xs font-semibold text-slate-500 mb-1.5">แท็กตัวแปรสำหรับใช้อัตโนมัติ (คลิกเพื่อวางลงในตำแหน่งพิมพ์):</label>
+                            <div class="flex flex-wrap gap-1.5">
+                                <span class="bg-slate-800/60 border border-slate-800 hover:border-amber-500/30 hover:text-amber-400 text-slate-400 text-[10px] px-2 py-1 rounded cursor-pointer transition font-mono" onclick="insertTag('[CUSTOMER_NAME]')">[CUSTOMER_NAME]</span>
+                                <span class="bg-slate-800/60 border border-slate-800 hover:border-amber-500/30 hover:text-amber-400 text-slate-400 text-[10px] px-2 py-1 rounded cursor-pointer transition font-mono" onclick="insertTag('[CAR_DETAILS]')">[CAR_DETAILS]</span>
+                                <span class="bg-slate-800/60 border border-slate-800 hover:border-amber-500/30 hover:text-amber-400 text-slate-400 text-[10px] px-2 py-1 rounded cursor-pointer transition font-mono" onclick="insertTag('[SERVICE_TOPIC]')">[SERVICE_TOPIC]</span>
+                                <span class="bg-slate-800/60 border border-slate-800 hover:border-amber-500/30 hover:text-amber-400 text-slate-400 text-[10px] px-2 py-1 rounded cursor-pointer transition font-mono" onclick="insertTag('[TARGET_DATE]')">[TARGET_DATE]</span>
+                                <span class="bg-slate-800/60 border border-slate-800 hover:border-amber-500/30 hover:text-amber-400 text-slate-400 text-[10px] px-2 py-1 rounded cursor-pointer transition font-mono" onclick="insertTag('[SHOP_PHONE]')">[SHOP_PHONE]</span>
+                                <span class="bg-slate-800/60 border border-slate-800 hover:border-amber-500/30 hover:text-amber-400 text-slate-400 text-[10px] px-2 py-1 rounded cursor-pointer transition font-mono" onclick="insertTag('[SHOP_OWNER]')">[SHOP_OWNER]</span>
+                            </div>
+                        </div>
+
+                        <button type="button" class="w-full bg-gradient-to-r from-rose-600 to-amber-500 hover:brightness-110 active:scale-[0.99] text-white py-3 rounded-lg text-sm font-bold shadow-lg shadow-rose-600/10 transition mt-2 flex items-center justify-center gap-2 cursor-pointer" onclick="saveSettingsForm()">
+                            <i class="fa-solid fa-floppy-disk"></i> บันทึกข้อมูลเจ้าของอู่ & เทมเพลตลงฐานข้อมูล
+                        </button>
+                    </div>
+                </div>
+
             </div>
-            <div>
-              <label class="block text-[11px] font-semibold text-steel mb-1.5">เบอร์โทรเจ้าของอู่</label>
-              <input type="text" class="w-full bg-ink border border-line rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-steel/60 focus:border-ember outline-none transition" id="settings-shop-phone" placeholder="081-234-5678" oninput="updateLivePreview()">
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-auto py-6 border-t border-slate-800/80 text-center text-[10px] sm:text-xs text-slate-500 shrink-0">
+            อู่ซ่อมรถพ่อมดนิสสันโดยช่างเก้า © 2026 - จัดการและส่งเมลผ่านระบบ Google Apps Script และ GitHub Pages
+        </footer>
+
+    </div>
+
+    <!-- --- 5. Modals Area --- -->
+    
+    <!-- Modal แก้ไขรายการ (Edit Modal) -->
+    <div class="modal hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[1000] items-center justify-center p-4" id="edit-modal">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 w-full max-w-lg shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-4">
+                <h3 class="text-sm sm:text-base font-bold text-amber-500 flex items-center gap-1.5">
+                    <i class="fa-solid fa-user-pen"></i> แก้ไขข้อมูลนัดหมายบริการ
+                </h3>
+                <button class="text-slate-400 hover:text-rose-500 text-lg transition cursor-pointer" onclick="closeModal('edit-modal')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-          </div>
-          <div>
-            <label class="block text-[11px] font-semibold text-steel mb-1.5">หัวข้อเมล (Subject)</label>
-            <input type="text" class="w-full bg-ink border border-line rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-steel/60 focus:border-ember outline-none transition" id="settings-email-subject" oninput="updateLivePreview()">
-          </div>
-          <div>
-            <label class="block text-[11px] font-semibold text-steel mb-1.5">เนื้อหาอีเมล (Body)</label>
-            <textarea class="w-full bg-ink border border-line rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-steel/60 focus:border-ember outline-none transition leading-relaxed" id="settings-email-body" rows="8" oninput="updateLivePreview()"></textarea>
-          </div>
-          <div>
-            <label class="block text-[10px] font-semibold text-steel/70 mb-1.5">แท็กตัวแปร (แตะเพื่อวาง):</label>
-            <div class="flex flex-wrap gap-1.5">
-              <span class="bg-panel2 border border-line hover:border-ember/40 hover:text-ember text-steel text-[10px] px-2 py-1 rounded-md cursor-pointer transition font-mono" onclick="insertTag('[CUSTOMER_NAME]')">[CUSTOMER_NAME]</span>
-              <span class="bg-panel2 border border-line hover:border-ember/40 hover:text-ember text-steel text-[10px] px-2 py-1 rounded-md cursor-pointer transition font-mono" onclick="insertTag('[CAR_DETAILS]')">[CAR_DETAILS]</span>
-              <span class="bg-panel2 border border-line hover:border-ember/40 hover:text-ember text-steel text-[10px] px-2 py-1 rounded-md cursor-pointer transition font-mono" onclick="insertTag('[SERVICE_TOPIC]')">[SERVICE_TOPIC]</span>
-              <span class="bg-panel2 border border-line hover:border-ember/40 hover:text-ember text-steel text-[10px] px-2 py-1 rounded-md cursor-pointer transition font-mono" onclick="insertTag('[TARGET_DATE]')">[TARGET_DATE]</span>
-              <span class="bg-panel2 border border-line hover:border-ember/40 hover:text-ember text-steel text-[10px] px-2 py-1 rounded-md cursor-pointer transition font-mono" onclick="insertTag('[SHOP_PHONE]')">[SHOP_PHONE]</span>
-              <span class="bg-panel2 border border-line hover:border-ember/40 hover:text-ember text-steel text-[10px] px-2 py-1 rounded-md cursor-pointer transition font-mono" onclick="insertTag('[SHOP_OWNER]')">[SHOP_OWNER]</span>
+            <form id="edit-schedule-form" onsubmit="submitEditSchedule(event)" class="space-y-3.5 text-xs sm:text-sm">
+                <input type="hidden" id="edit-id">
+                
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-400 mb-1">ชื่อ - สกุล ลูกค้า <span class="text-rose-500">*</span></label>
+                    <input type="text" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-amber-500 outline-none transition" id="edit-name" required>
+                </div>
+                
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-400 mb-1">อีเมล <span class="text-rose-500">*</span></label>
+                    <input type="email" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-amber-500 outline-none transition" id="edit-email" required>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">เบอร์โทรศัพท์</label>
+                        <input type="text" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-amber-500 outline-none transition" id="edit-phone">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">รุ่นรถ / ทะเบียน</label>
+                        <input type="text" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-amber-500 outline-none transition" id="edit-car">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-400 mb-1">เรื่องที่จะเชิญชวนเข้าบริการ <span class="text-rose-500">*</span></label>
+                    <input type="text" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-amber-500 outline-none transition" id="edit-topic" required>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">ประเภทงานบริการ <span class="text-rose-500">*</span></label>
+                        <select class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-amber-500 outline-none transition cursor-pointer" id="edit-cat" required>
+                            <option value="ทั่วไป/อื่นๆ">ทั่วไป/อื่นๆ</option>
+                            <option value="เช็คระยะ">เช็คระยะ (บำรุงรักษา)</option>
+                            <option value="ซ่อมทั่วไป">ซ่อมทั่วไป (เครื่องยนต์/ไฟ)</option>
+                            <option value="เคลมสี/ตัวถัง">เคลมสี/ตัวถัง</option>
+                            <option value="ระบบแอร์">ระบบแอร์</option>
+                            <option value="ด่วน/ฉุกเฉิน">ด่วน/ฉุกเฉิน</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-1">วันเดือนปี ครบกำหนด <span class="text-rose-500">*</span></label>
+                        <input type="date" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-amber-500 outline-none transition cursor-pointer" id="edit-target-date" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-400 mb-1">ตั้งแจ้งล่วงหน้า</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="number" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-amber-500 outline-none transition" id="edit-notice-value" min="0">
+                        <select class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:border-amber-500 outline-none transition cursor-pointer" id="edit-notice-unit">
+                            <option value="days">วัน (Days)</option>
+                            <option value="months">เดือน (Months)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 pt-2">
+                    <input type="checkbox" id="edit-reset-status" class="w-4 h-4 rounded bg-slate-950 border border-slate-800 text-amber-500 focus:ring-amber-500 focus:ring-offset-slate-900 cursor-pointer">
+                    <label for="edit-reset-status" class="text-xs text-slate-300 cursor-pointer select-none">
+                        รีเซ็ตสถานะเป็น "รอดำเนินการ" (กรณีขยายวันนัดหมายเพิ่ม)
+                    </label>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-3 border-t border-slate-800 mt-2">
+                    <button type="button" class="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-800 text-slate-400 hover:text-white transition cursor-pointer" onclick="closeModal('edit-modal')">ยกเลิก</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-semibold rounded-lg bg-amber-500 hover:bg-amber-400 text-black transition flex items-center gap-1 cursor-pointer">
+                        <i class="fa-solid fa-check"></i> บันทึกข้อมูลแก้ไข
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal ยืนยันการลบ (Delete Confirmation Modal) -->
+    <div class="modal hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[1000] items-center justify-center p-4" id="delete-modal">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-[320px] text-center shadow-2xl">
+            <div class="w-12 h-12 bg-rose-500/10 border border-rose-500/20 text-rose-500 rounded-full flex items-center justify-center text-xl mx-auto mb-4">
+                <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
-          </div>
-          <button type="button" class="w-full bg-gradient-to-r from-ember to-gold hover:brightness-110 active:scale-[0.98] text-ink py-3.5 rounded-xl text-xs font-bold shadow-lg shadow-ember/15 transition flex items-center justify-center gap-2 mt-1" onclick="saveSettingsForm()">
-            <i class="fa-solid fa-floppy-disk"></i> บันทึกลงฐานข้อมูล
-          </button>
+            <h3 class="text-base font-bold text-white mb-2">คุณแน่ใจหรือไม่?</h3>
+            <p class="text-xs text-slate-400 mb-5 leading-relaxed">
+                ต้องการลบข้อมูลคิวงานของ <span id="delete-cust-name" class="font-semibold text-amber-500"></span> ใช่หรือไม่? การกระทำนี้ไม่สามารถย้อนกลับได้
+            </p>
+            <input type="hidden" id="delete-id">
+            <div class="flex gap-2 justify-center">
+                <button type="button" class="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-800 text-slate-400 hover:text-white transition cursor-pointer" onclick="closeModal('delete-modal')">ยกเลิก</button>
+                <button type="button" class="px-4 py-2 text-xs font-semibold rounded-lg bg-rose-600 hover:bg-rose-500 text-white transition flex items-center gap-1 cursor-pointer" onclick="confirmDeleteSchedule()">
+                    <i class="fa-solid fa-trash-can"></i> ลบรายการ
+                </button>
+            </div>
         </div>
-      </div>
-    </section>
-
-  </div><!-- /app-main -->
-
-  <!-- Bottom Tab Nav -->
-  <nav id="bottom-nav" class="hidden fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-panel/95 backdrop-blur-md border-t border-line z-40 safe-b">
-    <div class="grid grid-cols-3 py-2 px-2">
-      <button class="mobile-nav-btn active flex flex-col items-center gap-1 py-1.5 rounded-xl text-steel transition" onclick="switchTab('dashboard')">
-        <i class="fa-solid fa-list-check text-base"></i>
-        <span class="text-[9.5px] font-medium">คิวงาน</span>
-      </button>
-      <button class="mobile-nav-btn flex flex-col items-center gap-1 py-1.5 rounded-xl text-steel transition" onclick="switchTab('register')">
-        <i class="fa-solid fa-file-circle-plus text-base"></i>
-        <span class="text-[9.5px] font-medium">เปิดใบนัด</span>
-      </button>
-      <button class="mobile-nav-btn flex flex-col items-center gap-1 py-1.5 rounded-xl text-steel transition" onclick="switchTab('settings')">
-        <i class="fa-solid fa-sliders text-base"></i>
-        <span class="text-[9.5px] font-medium">ตั้งค่า</span>
-      </button>
     </div>
-  </nav>
 
-</div><!-- /app-shell -->
+    <!-- Modal นำเข้าข้อมูลด้วย CSV (CSV Import Modal) -->
+    <div class="modal hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[1000] items-center justify-center p-4" id="import-modal">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 w-full max-w-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-4">
+                <h3 class="text-sm sm:text-base font-bold text-amber-500 flex items-center gap-1.5">
+                    <i class="fa-solid fa-file-import"></i> นำเข้าข้อมูลลูกค้าด้วยไฟล์ CSV
+                </h3>
+                <button class="text-slate-400 hover:text-rose-500 text-lg transition cursor-pointer" onclick="closeModal('import-modal')">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="text-xs sm:text-sm text-slate-400 mb-4 space-y-2 leading-relaxed">
+                <p>เลือกไฟล์ CSV ที่ต้องการนำเข้า โดยโครงสร้างคอลัมน์ของไฟล์ต้องเป็นดังนี้:</p>
+                <div class="bg-slate-950 border border-slate-800/80 p-2.5 rounded-lg font-mono text-[10px] text-amber-400 overflow-x-auto whitespace-nowrap">
+                    ชื่อลูกค้า, อีเมล, เบอร์โทร, รุ่นรถ, เรื่องบริการ, วันกำหนด(YYYY-MM-DD), ล่วงหน้า(ตัวเลข), หน่วยแจ้ง(days/months), ประเภทงาน
+                </div>
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 pt-1.5">
+                    <span class="text-[10px] sm:text-xs text-slate-500">* แนะนำให้ดาวน์โหลดไฟล์เทมเพลตไปกรอกข้อมูลเพื่อความถูกต้อง</span>
+                    <a href="#" onclick="downloadCSVTemplate(event)" class="text-amber-500 hover:text-amber-400 font-semibold text-xs inline-flex items-center gap-1"><i class="fa-solid fa-download"></i> ดาวน์โหลดตัวอย่าง CSV</a>
+                </div>
+            </div>
+            
+            <div class="border-2 border-dashed border-slate-800 hover:border-amber-500/50 bg-slate-950/40 rounded-xl p-6 text-center cursor-pointer transition relative mb-4" onclick="document.getElementById('csv-file-input').click()">
+                <i class="fa-solid fa-cloud-arrow-up text-3xl text-amber-500 mb-2 block animate-float"></i>
+                <p id="upload-status-text" class="text-xs text-slate-300">คลิกเพื่อเลือกไฟล์ CSV หรือลากไฟล์มาวางที่นี่</p>
+                <input type="file" id="csv-file-input" accept=".csv" class="hidden" onchange="handleCSVFileSelect(event)">
+            </div>
 
-<!-- ================= BOTTOM SHEET MODALS ================= -->
+            <!-- กล่องพรีวิวรายการจาก CSV -->
+            <div id="csv-preview-area" class="hidden space-y-2.5">
+                <h4 class="text-xs sm:text-sm font-bold text-amber-500 flex items-center gap-1.5">
+                    <i class="fa-solid fa-list"></i> พรีวิวข้อมูลที่จะนำเข้า (<span id="csv-import-count">0</span> รายการ)
+                </h4>
+                <div class="max-h-[180px] overflow-y-auto border border-slate-800 rounded-lg bg-slate-950/80">
+                    <table class="w-full text-left text-[11px] sm:text-xs">
+                        <thead class="bg-slate-900 text-slate-400 sticky top-0 border-b border-slate-800">
+                            <tr>
+                                <th class="px-3 py-2 font-medium">ชื่อลูกค้า</th>
+                                <th class="px-3 py-2 font-medium">เบอร์โทร</th>
+                                <th class="px-3 py-2 font-medium">รุ่นรถ</th>
+                                <th class="px-3 py-2 font-medium">บริการ</th>
+                                <th class="px-3 py-2 font-medium">วันครบกำหนด</th>
+                                <th class="px-3 py-2 font-medium">ประเภท</th>
+                            </tr>
+                        </thead>
+                        <tbody id="csv-preview-tbody" class="divide-y divide-slate-800/40 text-slate-300">
+                            <!-- พรีวิวข้อมูล -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-<!-- Edit Modal -->
-<div class="modal hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[1000] items-end justify-center" id="edit-modal">
-  <div class="sheet w-full max-w-[480px] bg-panel border-t border-line rounded-t-3xl p-5 max-h-[88vh] overflow-y-auto">
-    <div class="w-10 h-1 bg-line rounded-full mx-auto mb-4"></div>
-    <div class="flex justify-between items-center pb-3 border-b border-line mb-4">
-      <h3 class="text-sm font-head font-semibold text-gold flex items-center gap-1.5"><i class="fa-solid fa-user-pen"></i> แก้ไขใบนัดบริการ</h3>
-      <button class="text-steel hover:text-ember text-lg transition" onclick="closeModal('edit-modal')"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <form id="edit-schedule-form" onsubmit="submitEditSchedule(event)" class="space-y-3 text-xs">
-      <input type="hidden" id="edit-id">
-      <div>
-        <label class="block text-[11px] font-semibold text-steel mb-1">ชื่อ - สกุล ลูกค้า <span class="text-ember">*</span></label>
-        <input type="text" class="w-full bg-ink border border-line rounded-lg px-3 py-2.5 text-white focus:border-ember outline-none transition" id="edit-name" required>
-      </div>
-      <div>
-        <label class="block text-[11px] font-semibold text-steel mb-1">อีเมล <span class="text-ember">*</span></label>
-        <input type="email" class="w-full bg-ink border border-line rounded-lg px-3 py-2.5 text-white focus:border-ember outline-none transition" id="edit-email" required>
-      </div>
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-[11px] font-semibold text-steel mb-1">เบอร์โทร</label>
-          <input type="text" class="w-full bg-ink border border-line rounded-lg px-3 py-2.5 text-white focus:border-ember outline-none transition" id="edit-phone">
+            <div class="flex justify-end gap-2 pt-4 border-t border-slate-800 mt-4">
+                <button type="button" class="px-4 py-2 text-xs font-semibold rounded-lg border border-slate-800 text-slate-400 hover:text-white transition cursor-pointer" onclick="closeModal('import-modal')">ยกเลิก</button>
+                <button type="button" id="btn-confirm-import" class="px-4 py-2 text-xs font-semibold rounded-lg bg-amber-500 hover:bg-amber-400 text-black transition flex items-center gap-1 cursor-pointer" disabled onclick="submitCSVData()">
+                    <i class="fa-solid fa-check"></i> ยืนยันการนำเข้าข้อมูล
+                </button>
+            </div>
         </div>
-        <div>
-          <label class="block text-[11px] font-semibold text-steel mb-1">รุ่นรถ/ทะเบียน</label>
-          <input type="text" class="w-full bg-ink border border-line rounded-lg px-3 py-2.5 text-white focus:border-ember outline-none transition" id="edit-car">
-        </div>
-      </div>
-      <div>
-        <label class="block text-[11px] font-semibold text-steel mb-1">เรื่องที่จะเชิญเข้าบริการ <span class="text-ember">*</span></label>
-        <input type="text" class="w-full bg-ink border border-line rounded-lg px-3 py-2.5 text-white focus:border-ember outline-none transition" id="edit-topic" required>
-      </div>
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="block text-[11px] font-semibold text-steel mb-1">ประเภทงาน <span class="text-ember">*</span></label>
-          <select class="w-full bg-ink border border-line rounded-lg px-2.5 py-2.5 text-white focus:border-ember outline-none transition" id="edit-cat" required>
-            <option value="ทั่วไป/อื่นๆ">ทั่วไป/อื่นๆ</option>
-            <option value="เช็คระยะ">เช็คระยะ</option>
-            <option value="ซ่อมทั่วไป">ซ่อมทั่วไป</option>
-            <option value="เคลมสี/ตัวถัง">เคลมสี/ตัวถัง</option>
-            <option value="ระบบแอร์">ระบบแอร์</option>
-            <option value="ด่วน/ฉุกเฉิน">ด่วน/ฉุกเฉิน</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-[11px] font-semibold text-steel mb-1">วันครบกำหนด <span class="text-ember">*</span></label>
-          <input type="date" class="w-full bg-ink border border-line rounded-lg px-2.5 py-2.5 text-white focus:border-ember outline-none transition" id="edit-target-date" required>
-        </div>
-      </div>
-      <div>
-        <label class="block text-[11px] font-semibold text-steel mb-1">แจ้งล่วงหน้า</label>
-        <div class="grid grid-cols-2 gap-3">
-          <input type="number" class="w-full bg-ink border border-line rounded-lg px-3 py-2.5 text-white focus:border-ember outline-none transition" id="edit-notice-value" min="0">
-          <select class="w-full bg-ink border border-line rounded-lg px-2.5 py-2.5 text-white focus:border-ember outline-none transition" id="edit-notice-unit">
-            <option value="days">วัน (Days)</option>
-            <option value="months">เดือน (Months)</option>
-          </select>
-        </div>
-      </div>
-      <div class="items-center gap-2 pt-1 hidden" style="display:none;">
-        <input type="checkbox" id="edit-reset-status" class="w-4 h-4 rounded bg-ink border border-line text-ember">
-        <label for="edit-reset-status" class="text-[11px] text-slate-300 select-none">รีเซ็ตสถานะเป็น "รอดำเนินการ"</label>
-      </div>
-      <div class="flex gap-2 pt-3 border-t border-line mt-2">
-        <button type="button" class="flex-1 px-4 py-2.5 text-xs font-semibold rounded-xl border border-line text-steel hover:text-white transition" onclick="closeModal('edit-modal')">ยกเลิก</button>
-        <button type="submit" class="flex-1 px-4 py-2.5 text-xs font-semibold rounded-xl bg-gold text-ink hover:brightness-110 transition flex items-center justify-center gap-1"><i class="fa-solid fa-check"></i> บันทึก</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- Delete Modal -->
-<div class="modal hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[1000] items-end justify-center" id="delete-modal">
-  <div class="sheet w-full max-w-[480px] bg-panel border-t border-line rounded-t-3xl p-6 text-center">
-    <div class="w-10 h-1 bg-line rounded-full mx-auto mb-4"></div>
-    <div class="w-12 h-12 bg-ember/10 border border-ember/25 text-ember rounded-full flex items-center justify-center text-xl mx-auto mb-4">
-      <i class="fa-solid fa-triangle-exclamation"></i>
     </div>
-    <h3 class="text-base font-head font-bold text-white mb-2">ลบใบนัดนี้?</h3>
-    <p class="text-xs text-steel mb-5 leading-relaxed">ต้องการลบข้อมูลคิวของ <span id="delete-cust-name" class="font-semibold text-gold"></span> ใช่หรือไม่ การกระทำนี้ย้อนกลับไม่ได้</p>
-    <input type="hidden" id="delete-id">
-    <div class="flex gap-2">
-      <button type="button" class="flex-1 px-4 py-2.5 text-xs font-semibold rounded-xl border border-line text-steel hover:text-white transition" onclick="closeModal('delete-modal')">ยกเลิก</button>
-      <button type="button" class="flex-1 px-4 py-2.5 text-xs font-semibold rounded-xl bg-ember2 hover:brightness-110 text-white transition flex items-center justify-center gap-1" onclick="confirmDeleteSchedule()"><i class="fa-solid fa-trash-can"></i> ลบรายการ</button>
-    </div>
-  </div>
-</div>
 
-<!-- Import CSV Modal -->
-<div class="modal hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-[1000] items-end justify-center" id="import-modal">
-  <div class="sheet w-full max-w-[480px] bg-panel border-t border-line rounded-t-3xl p-5 max-h-[88vh] overflow-y-auto">
-    <div class="w-10 h-1 bg-line rounded-full mx-auto mb-4"></div>
-    <div class="flex justify-between items-center pb-3 border-b border-line mb-4">
-      <h3 class="text-sm font-head font-semibold text-gold flex items-center gap-1.5"><i class="fa-solid fa-file-import"></i> นำเข้าข้อมูล CSV</h3>
-      <button class="text-steel hover:text-ember text-lg transition" onclick="closeModal('import-modal')"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="text-[11px] text-steel mb-3 space-y-2 leading-relaxed">
-      <p>โครงสร้างคอลัมน์ของไฟล์ CSV:</p>
-      <div class="bg-ink border border-line p-2.5 rounded-lg font-mono text-[9.5px] text-gold overflow-x-auto whitespace-nowrap">
-        ชื่อ, อีเมล, เบอร์โทร, รุ่นรถ, บริการ, วันกำหนด(YYYY-MM-DD), ล่วงหน้า, หน่วย(days/months), ประเภทงาน
-      </div>
-      <a href="#" onclick="downloadCSVTemplate(event)" class="text-gold hover:text-white font-semibold text-[11px] inline-flex items-center gap-1"><i class="fa-solid fa-download"></i> ดาวน์โหลดตัวอย่าง CSV</a>
-    </div>
-    <div class="border-2 border-dashed border-line hover:border-ember/50 bg-ink/40 rounded-xl p-6 text-center cursor-pointer transition mb-3" onclick="document.getElementById('csv-file-input').click()">
-      <i class="fa-solid fa-cloud-arrow-up text-2xl text-gold mb-2 block floaty"></i>
-      <p id="upload-status-text" class="text-[11px] text-slate-300">แตะเพื่อเลือกไฟล์ CSV</p>
-      <input type="file" id="csv-file-input" accept=".csv" class="hidden" onchange="handleCSVFileSelect(event)">
-    </div>
-    <div id="csv-preview-area" class="hidden space-y-2">
-      <h4 class="text-[11px] font-bold text-gold flex items-center gap-1.5"><i class="fa-solid fa-list"></i> พรีวิว (<span id="csv-import-count">0</span> รายการ)</h4>
-      <div class="max-h-[150px] overflow-y-auto border border-line rounded-lg bg-ink/60">
-        <table class="w-full text-left text-[10px]">
-          <thead class="bg-panel2 text-steel sticky top-0 border-b border-line">
-            <tr>
-              <th class="px-2.5 py-2 font-medium">ชื่อ</th>
-              <th class="px-2.5 py-2 font-medium">รถ</th>
-              <th class="px-2.5 py-2 font-medium">บริการ</th>
-              <th class="px-2.5 py-2 font-medium">วันกำหนด</th>
-            </tr>
-          </thead>
-          <tbody id="csv-preview-tbody" class="divide-y divide-line/40 text-slate-300"></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="flex gap-2 pt-4 border-t border-line mt-4">
-      <button type="button" class="flex-1 px-4 py-2.5 text-xs font-semibold rounded-xl border border-line text-steel hover:text-white transition" onclick="closeModal('import-modal')">ยกเลิก</button>
-      <button type="button" id="btn-confirm-import" class="flex-1 px-4 py-2.5 text-xs font-semibold rounded-xl bg-gold text-ink transition flex items-center justify-center gap-1 disabled:opacity-40" disabled onclick="submitCSVData()"><i class="fa-solid fa-check"></i> ยืนยันนำเข้า</button>
-    </div>
-  </div>
-</div>
+    <!-- --- JavaScript Logic --- -->
+    <script>
+        // ข้อมูลหลักในหน่วยความจำ
+        let pinCode = "";
+        let isUnlocked = false;
+        let allSchedules = [];
+        let defaultSettings = {
+            shopOwnerName: "ช่างเก้า พ่อมดนิสสัน",
+            shopOwnerPhone: "08X-XXX-XXXX",
+            emailTemplateSubject: "แจ้งเตือนครบรอบบริการ: [SERVICE_TOPIC] - อู่ซ่อมรถพ่อมดนิสสันโดยช่างเก้า",
+            emailTemplateBody: "เรียน คุณ [CUSTOMER_NAME],\n\nอู่ซ่อมรถพ่อมดนิสสันโดยช่างเก้า ขอแจ้งเตือนวันเข้าบริการสำหรับรถยนต์ [CAR_DETAILS] ของท่าน\n\nเรื่องที่ต้องรับบริการ: [SERVICE_TOPIC]\nวันที่คาดว่าควรเข้าบริการ: [TARGET_DATE]\n\nเพื่อให้รถยนต์ของท่านอยู่ในสภาพที่พร้อมใช้งานและปลอดภัยสูงสุด สามารถโทรนัดหมายคิวบริการล่วงหน้าหรือติดต่อสอบถามข้อมูลเพิ่มเติมได้ที่:\nเบอร์โทรช่างเก้า: [SHOP_PHONE]\n\nขอแสดงความนับถือ,\n[SHOP_OWNER]\nอู่ซ่อมรถพ่อมดนิสสัน (โดยช่างเก้า)"
+        };
 
-<script>
-// ============ STATE ============
-let pinCode = "";
-let isUnlocked = false;
-let allSchedules = [];
-let defaultSettings = {
-  shopOwnerName: "ช่างเก้า พ่อมดนิสสัน",
-  shopOwnerPhone: "08X-XXX-XXXX",
-  emailTemplateSubject: "แจ้งเตือนครบรอบบริการ: [SERVICE_TOPIC] - อู่ซ่อมรถพ่อมดนิสสันโดยช่างเก้า",
-  emailTemplateBody: "เรียน คุณ [CUSTOMER_NAME],\n\nอู่ซ่อมรถพ่อมดนิสสันโดยช่างเก้า ขอแจ้งเตือนวันเข้าบริการสำหรับรถยนต์ [CAR_DETAILS] ของท่าน\n\nเรื่องที่ต้องรับบริการ: [SERVICE_TOPIC]\nวันที่คาดว่าควรเข้าบริการ: [TARGET_DATE]\n\nเพื่อให้รถยนต์ของท่านอยู่ในสภาพที่พร้อมใช้งานและปลอดภัยสูงสุด สามารถโทรนัดหมายคิวบริการล่วงหน้าหรือติดต่อสอบถามข้อมูลเพิ่มเติมได้ที่:\nเบอร์โทรช่างเก้า: [SHOP_PHONE]\n\nขอแสดงความนับถือ,\n[SHOP_OWNER]\nอู่ซ่อมรถพ่อมดนิสสัน (โดยช่างเก้า)"
-};
+        // --- เริ่มต้นระบบ ---
+        window.addEventListener('DOMContentLoaded', () => {
+            // 1. ตรวจสอบข้อมูล URL และกำหนดค่าเริ่มต้นก่อนเป็นอันดับแรกสุด
+            const storedUrl = localStorage.getItem('gas_url');
+            if (!storedUrl || storedUrl === 'null' || storedUrl === 'undefined' || storedUrl.trim() === '') {
+                localStorage.setItem('gas_url', 'https://script.google.com/macros/s/AKfycbxsvb2UHNZxZ9OdlkMYkYm20HGfHsTJYrDpigyX8VIRQt06UDK6-R1lcj3VXrD1t9dT/exec');
+            }
 
-window.addEventListener('DOMContentLoaded', () => {
-  const storedUrl = localStorage.getItem('gas_url');
-  if (!storedUrl || storedUrl === 'null' || storedUrl === 'undefined' || storedUrl.trim() === '') {
-    localStorage.setItem('gas_url', 'https://script.google.com/macros/s/AKfycbxsvb2UHNZxZ9OdlkMYkYm20HGfHsTJYrDpigyX8VIRQt06UDK6-R1lcj3VXrD1t9dT/exec');
-  }
-  const sessionAuth = sessionStorage.getItem('admin_unlocked');
-  if (sessionAuth === 'true') {
-    unlockSystem();
-  } else {
-    if (!localStorage.getItem('admin_pin')) localStorage.setItem('admin_pin', '1234');
-  }
-  updateLivePreview();
-});
+            // 2. โหลดสถานะปลดล็อคจาก Session Storage (ป้องกันต้องล็อคอินทุกครั้งที่กด F5)
+            const sessionAuth = sessionStorage.getItem('admin_unlocked');
+            if (sessionAuth === 'true') {
+                unlockSystem();
+            } else {
+                // ตรวจสอบ PIN ใน LocalStorage (ถ้ายังไม่มีให้เป็น 1234)
+                if (!localStorage.getItem('admin_pin')) {
+                    localStorage.setItem('admin_pin', '1234');
+                }
+            }
+            
+            // เติมฟอร์มพรีวิว
+            updateLivePreview();
+        });
 
-// ============ PIN KEYPAD ============
-function pressKey(num) {
-  const storedPin = localStorage.getItem('admin_pin') || '1234';
-  if (num === 'delete') {
-    pinCode = pinCode.slice(0, -1);
-  } else {
-    if (pinCode.length < 4) pinCode += num;
-  }
-  updatePinDots();
-  if (pinCode.length === 4) {
-    if (pinCode === storedPin) {
-      showToast('ปลดล็อคระบบสำเร็จ!', 'success');
-      setTimeout(() => { unlockSystem(); }, 300);
-    } else {
-      showToast('รหัส PIN ไม่ถูกต้อง ลองอีกครั้ง', 'error');
-      setTimeout(() => { clearPin(); }, 500);
-    }
-  }
-}
-function clearPin() { pinCode = ""; updatePinDots(); }
-function updatePinDots() {
-  for (let i = 0; i < 4; i++) {
-    const dot = document.getElementById(`dot-${i}`);
-    if (i < pinCode.length) {
-      dot.className = "w-3.5 h-3.5 rounded-full bg-gold border-2 border-gold shadow-[0_0_10px_#F2B705] transition duration-300";
-    } else {
-      dot.className = "w-3.5 h-3.5 rounded-full border-2 border-line transition duration-300";
-    }
-  }
-}
+        // --- รหัสแอดมิน PIN (Keypad) ---
+        function pressKey(num) {
+            const storedPin = localStorage.getItem('admin_pin') || '1234';
+            
+            if (num === 'delete') {
+                pinCode = pinCode.slice(0, -1);
+            } else {
+                if (pinCode.length < 4) {
+                    pinCode += num;
+                }
+            }
+            
+            // อัปเดตจุดแสดงผล
+            updatePinDots();
 
-function unlockSystem() {
-  isUnlocked = true;
-  sessionStorage.setItem('admin_unlocked', 'true');
-  document.getElementById('auth-section').classList.add('hidden');
-  document.getElementById('app-main').classList.remove('hidden');
-  document.getElementById('app-main').classList.add('flex');
-  document.getElementById('bottom-nav').classList.remove('hidden');
-  switchTab('dashboard');
-  loadAllData(true);
-}
+            // เช็คว่าครบ 4 หลักหรือยัง
+            if (pinCode.length === 4) {
+                if (pinCode === storedPin) {
+                    showToast('ปลดล็อคระบบแอดมินสำเร็จ!', 'success');
+                    setTimeout(() => {
+                        unlockSystem();
+                    }, 300);
+                } else {
+                    showToast('รหัสผ่าน PIN ไม่ถูกต้อง ลองอีกครั้ง', 'error');
+                    setTimeout(() => {
+                        clearPin();
+                    }, 500);
+                }
+            }
+        }
 
-function lockAdmin() {
-  isUnlocked = false;
-  sessionStorage.removeItem('admin_unlocked');
-  pinCode = "";
-  updatePinDots();
-  document.getElementById('app-main').classList.add('hidden');
-  document.getElementById('app-main').classList.remove('flex');
-  document.getElementById('bottom-nav').classList.add('hidden');
-  document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-  document.getElementById('auth-section').classList.remove('hidden');
-  showToast('ล็อคระบบเรียบร้อยแล้ว', 'info');
-}
+        function clearPin() {
+            pinCode = "";
+            updatePinDots();
+        }
 
-// ============ TABS ============
-const tabTitles = { dashboard: 'คิวแจ้งเตือน', register: 'เปิดใบนัดบริการ', settings: 'ตั้งค่าระบบ' };
-function switchTab(tabName) {
-  if (!isUnlocked) return;
-  document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-  document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
-    btn.classList.remove('text-gold', 'bg-ember/10');
-    btn.classList.add('text-steel');
-  });
-  const activeTab = document.getElementById(`tab-${tabName}`);
-  if (activeTab) activeTab.classList.remove('hidden');
-  const activeButtons = document.querySelectorAll(`[onclick="switchTab('${tabName}')"]`);
-  activeButtons.forEach(btn => { btn.classList.remove('text-steel'); btn.classList.add('text-gold', 'bg-ember/10'); });
-  document.getElementById('topbar-title').innerText = tabTitles[tabName] || '';
-  if (tabName === 'dashboard') renderSchedules();
-  else if (tabName === 'settings') loadSettingsToForm();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+        function updatePinDots() {
+            for (let i = 0; i < 4; i++) {
+                const dot = document.getElementById(`dot-${i}`);
+                if (i < pinCode.length) {
+                    dot.className = "w-3.5 h-3.5 rounded-full bg-amber-500 border-2 border-amber-500 shadow-[0_0_8px_#f59e0b] transition duration-300";
+                } else {
+                    dot.className = "w-3.5 h-3.5 rounded-full border-2 border-slate-700 transition duration-300";
+                }
+            }
+        }
 
-// ============ LOADER / TOAST ============
-function setLoader(show, text = 'กำลังโหลดข้อมูล...') {
-  const overlay = document.getElementById('loading-overlay');
-  document.getElementById('loading-text').innerText = text;
-  if (show) { overlay.classList.remove('hidden'); overlay.classList.add('flex'); }
-  else { overlay.classList.remove('flex'); overlay.classList.add('hidden'); }
-}
+        function unlockSystem() {
+            isUnlocked = true;
+            sessionStorage.setItem('admin_unlocked', 'true');
+            
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('main-nav').classList.remove('hidden');
+            
+            const mobileNav = document.getElementById('mobile-nav');
+            if (mobileNav) mobileNav.classList.remove('hidden');
+            
+            // เปลี่ยนไปแท็บแดชบอร์ดตามปกติ
+            switchTab('dashboard');
+            
+            // โหลดข้อมูลจาก Sheets
+            loadAllData(true);
+        }
 
-function showToast(message, type = 'info', duration = 3200) {
-  const container = document.getElementById('toast-container');
-  const toast = document.createElement('div');
-  let borderClass = 'border-l-gold';
-  let iconClass = 'fa-circle-info text-gold';
-  if (type === 'success') { borderClass = 'border-l-spark'; iconClass = 'fa-circle-check text-spark'; }
-  if (type === 'error') { borderClass = 'border-l-ember2'; iconClass = 'fa-circle-exclamation text-ember2'; }
-  if (type === 'warning') { borderClass = 'border-l-gold'; iconClass = 'fa-triangle-exclamation text-gold'; }
-  toast.className = `toast-t flex items-center gap-2.5 bg-panel/95 backdrop-blur border border-line border-l-4 ${borderClass} text-slate-100 p-3.5 rounded-xl shadow-xl -translate-y-6 opacity-0 w-full text-[11px]`;
-  toast.innerHTML = `<i class="fa-solid ${iconClass} text-sm shrink-0"></i><div class="flex-grow font-medium">${message}</div>`;
-  container.appendChild(toast);
-  setTimeout(() => { toast.classList.remove('-translate-y-6','opacity-0'); }, 50);
-  setTimeout(() => { toast.classList.add('-translate-y-6','opacity-0'); setTimeout(() => toast.remove(), 300); }, duration);
-}
+        function lockAdmin() {
+            isUnlocked = false;
+            sessionStorage.removeItem('admin_unlocked');
+            pinCode = "";
+            updatePinDots();
+            
+            // ซ่อนเมนูทั้งหมด
+            document.getElementById('main-nav').classList.add('hidden');
+            const mobileNav = document.getElementById('mobile-nav');
+            if (mobileNav) mobileNav.classList.add('hidden');
+            
+            document.getElementById('tab-dashboard').classList.add('hidden');
+            document.getElementById('tab-register').classList.add('hidden');
+            document.getElementById('tab-settings').classList.add('hidden');
+            
+            // แสดงหน้าจอปลดล็อค
+            document.getElementById('auth-section').classList.remove('hidden');
+            showToast('ล็อคระบบนำเข้าสู่ความปลอดภัยเรียบร้อยแล้ว', 'info');
+        }
 
-// ============ API / DATA ============
-async function loadAllData(showOverlay = false, forceRefresh = false) {
-  const url = localStorage.getItem('gas_url');
-  if (!url) { showToast('กรุณากรอก Web App URL ในหน้าตั้งค่าก่อน', 'error'); switchTab('settings'); return; }
-  const refreshIcon = document.getElementById('icon-refresh');
-  if (showOverlay) setLoader(true, 'กำลังเชิญพลังเวทมนตร์จาก Google Sheets...');
-  else if (refreshIcon) refreshIcon.classList.add('animate-spin');
+        // --- สลับแท็บหน้าจอ ---
+        function switchTab(tabName) {
+            if (!isUnlocked) return;
+            
+            // ซ่อนทุกอัน
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // ลบสถานะแอคทีฟของปุ่มใน Desktop และ Mobile
+            document.querySelectorAll('.nav-btn, .mobile-nav-btn').forEach(btn => {
+                btn.classList.remove('text-amber-500', 'border-amber-500/50', 'bg-amber-500/5');
+                btn.classList.add('text-slate-400');
+            });
 
-  try {
-    const schedulesRes = await fetch(`${url}?action=getSchedules`);
-    const sData = await schedulesRes.json();
-    if (sData.success) allSchedules = sData.data;
-    else showToast('ดึงข้อมูลตารางนัดไม่สำเร็จ: ' + sData.error, 'error');
+            // แสดงแท็บที่เลือก
+            const activeTab = document.getElementById(`tab-${tabName}`);
+            if (activeTab) activeTab.classList.remove('hidden');
+            
+            // ไฮไลท์ปุ่มที่เลือก (ในทั้ง Desktop และ Mobile)
+            const activeButtons = document.querySelectorAll(`[onclick="switchTab('${tabName}')"]`);
+            activeButtons.forEach(btn => {
+                btn.classList.remove('text-slate-400');
+                btn.classList.add('text-amber-500', 'border-amber-500/50', 'bg-amber-500/5');
+            });
 
-    const settingsRes = await fetch(`${url}?action=getSettings`);
-    const configData = await settingsRes.json();
-    if (configData.success) {
-      const dbSettings = configData.data;
-      if (dbSettings.ShopOwnerName) {
-        localStorage.setItem('shop_owner', dbSettings.ShopOwnerName);
-        localStorage.setItem('shop_phone', dbSettings.ShopOwnerPhone);
-        localStorage.setItem('email_subject', dbSettings.EmailTemplateSubject);
-        localStorage.setItem('email_body', dbSettings.EmailTemplateBody);
-      }
-    }
-    renderSchedules();
-    if (forceRefresh) showToast('อัปเดตดึงข้อมูลสำเร็จแล้ว!', 'success');
-  } catch (err) {
-    console.error(err);
-    showToast('การเชื่อมต่อกับสคริปต์ GAS ผิดพลาด ตรวจสอบลิงก์อีกครั้ง', 'error');
-  } finally {
-    if (showOverlay) setLoader(false);
-    else if (refreshIcon) refreshIcon.classList.remove('animate-spin');
-  }
-}
+            // รีเซ็ตการโหลดข้อมูลในการกดแต่ละแท็บถ้าต้องการ
+            if (tabName === 'dashboard') {
+                renderSchedules();
+            } else if (tabName === 'settings') {
+                loadSettingsToForm();
+            }
+        }
 
-function getAppConfig() {
-  return {
-    shopOwnerName: localStorage.getItem('shop_owner') || defaultSettings.shopOwnerName,
-    shopOwnerPhone: localStorage.getItem('shop_phone') || defaultSettings.shopOwnerPhone,
-    emailTemplateSubject: localStorage.getItem('email_subject') || defaultSettings.emailTemplateSubject,
-    emailTemplateBody: localStorage.getItem('email_body') || defaultSettings.emailTemplateBody
-  };
-}
+        // --- แสดง/ซ่อน Loader ---
+        function setLoader(show, text = 'กำลังโหลดข้อมูล...') {
+            const overlay = document.getElementById('loading-overlay');
+            const overlayText = document.getElementById('loading-text');
+            overlayText.innerText = text;
+            if (show) {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+            } else {
+                overlay.classList.remove('flex');
+                overlay.classList.add('hidden');
+            }
+        }
 
-function loadSettingsToForm() {
-  const config = getAppConfig();
-  document.getElementById('settings-gas-url').value = localStorage.getItem('gas_url') || '';
-  document.getElementById('settings-admin-pin').value = localStorage.getItem('admin_pin') || '1234';
-  document.getElementById('settings-shop-owner').value = config.shopOwnerName;
-  document.getElementById('settings-shop-phone').value = config.shopOwnerPhone;
-  document.getElementById('settings-email-subject').value = config.emailTemplateSubject;
-  document.getElementById('settings-email-body').value = config.emailTemplateBody;
-}
+        // --- Toast System ---
+        function showToast(message, type = 'info', duration = 3500) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let borderClass = 'border-l-amber-500';
+            let iconClass = 'fa-circle-info text-amber-500';
+            if (type === 'success') {
+                borderClass = 'border-l-emerald-500';
+                iconClass = 'fa-circle-check text-emerald-500';
+            }
+            if (type === 'error') {
+                borderClass = 'border-l-rose-500';
+                iconClass = 'fa-circle-exclamation text-rose-500';
+            }
+            if (type === 'warning') {
+                borderClass = 'border-l-amber-500';
+                iconClass = 'fa-triangle-exclamation text-amber-500';
+            }
+            
+            toast.className = `flex items-center gap-3 bg-slate-900/95 backdrop-blur border border-slate-800 border-l-4 ${borderClass} text-slate-100 p-4 rounded-lg shadow-xl translate-x-[120%] toast-transition w-full text-xs sm:text-sm`;
+            toast.innerHTML = `
+                <i class="fa-solid ${iconClass} text-base shrink-0"></i>
+                <div class="flex-grow font-medium">${message}</div>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Trigger animation
+            setTimeout(() => toast.classList.remove('translate-x-[120%]'), 50);
+            
+            // Auto remove
+            setTimeout(() => {
+                toast.classList.add('translate-x-[120%]');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
 
-async function saveSettingsForm() {
-  const pin = document.getElementById('settings-admin-pin').value.trim();
-  const url = document.getElementById('settings-gas-url').value.trim();
-  const owner = document.getElementById('settings-shop-owner').value.trim();
-  const phone = document.getElementById('settings-shop-phone').value.trim();
-  const subject = document.getElementById('settings-email-subject').value.trim();
-  const body = document.getElementById('settings-email-body').value.trim();
+        // --- การดึงข้อมูลและ API (GAS) ---
 
-  if (!url) { showToast('กรุณาระบุ Web App URL', 'error'); return; }
-  if (pin.length !== 4 || isNaN(pin)) { showToast('รหัสผ่าน PIN ต้องเป็นตัวเลข 4 หลักเท่านั้น', 'error'); return; }
+        // โหลดข้อมูลการตั้งค่าและรายการลูกค้าทั้งหมดจาก GAS
+        async function loadAllData(showOverlay = false, forceRefresh = false) {
+            const url = localStorage.getItem('gas_url');
+            if (!url) {
+                showToast('กรุณากรอก Web App URL ในหน้าตั้งค่าก่อน', 'error');
+                switchTab('settings');
+                return;
+            }
 
-  localStorage.setItem('admin_pin', pin);
-  localStorage.setItem('gas_url', url);
-  setLoader(true, 'กำลังบันทึกตั้งค่าลง Google Sheets...');
+            const refreshIcon = document.getElementById('icon-refresh');
+            if (showOverlay) {
+                setLoader(true, 'กำลังเชิญพลังเวทมนตร์จาก Google Sheets...');
+            } else if (refreshIcon) {
+                refreshIcon.classList.add('animate-spin');
+            }
+            
+            try {
+                // 1. ดึงคิวทั้งหมด
+                const schedulesRes = await fetch(`${url}?action=getSchedules`);
+                const sData = await schedulesRes.json();
+                
+                if (sData.success) {
+                    allSchedules = sData.data;
+                } else {
+                    showToast('ดึงข้อมูลตารางนัดไม่สำเร็จ: ' + sData.error, 'error');
+                }
 
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'saveSettings', shopOwnerName: owner, shopOwnerPhone: phone, emailTemplateSubject: subject, emailTemplateBody: body })
-    });
-    const result = await response.json();
-    if (result.success) {
-      showToast('บันทึกข้อมูลและอัปเดตสเปรดชีตเรียบร้อย!', 'success');
-      localStorage.setItem('shop_owner', owner);
-      localStorage.setItem('shop_phone', phone);
-      localStorage.setItem('email_subject', subject);
-      localStorage.setItem('email_body', body);
-      updateLivePreview();
-    } else {
-      showToast('ไม่สามารถเซฟข้อมูลลงชีตได้: ' + result.error, 'error');
-    }
-  } catch (err) {
-    console.error(err);
-    showToast('เซฟข้อมูลผิดพลาด ลองตรวจสอบ Web App URL อีกครั้ง', 'error');
-  } finally { setLoader(false); }
-}
+                // 2. ดึงการตั้งค่า
+                const settingsRes = await fetch(`${url}?action=getSettings`);
+                const configData = await settingsRes.json();
+                
+                if (configData.success) {
+                    const dbSettings = configData.data;
+                    // เซฟเก็บไว้ใช้
+                    if (dbSettings.ShopOwnerName) {
+                        localStorage.setItem('shop_owner', dbSettings.ShopOwnerName);
+                        localStorage.setItem('shop_phone', dbSettings.ShopOwnerPhone);
+                        localStorage.setItem('email_subject', dbSettings.EmailTemplateSubject);
+                        localStorage.setItem('email_body', dbSettings.EmailTemplateBody);
+                    }
+                }
+                
+                renderSchedules();
+                if (forceRefresh) showToast('อัปเดตดึงข้อมูลสำเร็จแล้ว!', 'success');
+                
+            } catch (err) {
+                console.error(err);
+                showToast('การเชื่อมต่อกับสคริปต์ GAS ผิดพลาด ตรวจสอบความถูกต้องของลิงก์แอปสคริปต์', 'error');
+            } finally {
+                if (showOverlay) {
+                    setLoader(false);
+                } else if (refreshIcon) {
+                    refreshIcon.classList.remove('animate-spin');
+                }
+            }
+        }
 
-async function testConnection() {
-  const url = document.getElementById('settings-gas-url').value.trim();
-  if (!url) { showToast('กรุณาระบุ Web App URL ก่อนกดทดสอบ', 'error'); return; }
-  setLoader(true, 'กำลังตรวจสอบคิวงานพ่อมดนิสสัน...');
-  try {
-    const res = await fetch(`${url}?action=testConnection`);
-    const data = await res.json();
-    if (data.success) { showToast('เชื่อมต่อสำเร็จ! ' + (data.message || ''), 'success'); localStorage.setItem('gas_url', url); }
-    else { showToast('เชื่อมต่อไม่สำเร็จ: ' + data.error, 'error'); }
-  } catch (err) {
-    console.error(err);
-    showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ อาจเป็นเพราะสิทธิ์ CORS หรือลิงก์ยังไม่สมบูรณ์', 'error');
-  } finally { setLoader(false); }
-}
+        // คืนค่า Config จาก LocalStorage หรือดึงข้อมูลเริ่มต้น
+        function getAppConfig() {
+            return {
+                shopOwnerName: localStorage.getItem('shop_owner') || defaultSettings.shopOwnerName,
+                shopOwnerPhone: localStorage.getItem('shop_phone') || defaultSettings.shopOwnerPhone,
+                emailTemplateSubject: localStorage.getItem('email_subject') || defaultSettings.emailTemplateSubject,
+                emailTemplateBody: localStorage.getItem('email_body') || defaultSettings.emailTemplateBody
+            };
+        }
 
-// ============ DATE HELPERS ============
-function calculateNoticeDate(targetDateStr, value, unit) {
-  if (!targetDateStr) return '';
-  const parts = targetDateStr.split('-');
-  if (parts.length !== 3) return '';
-  const year = parseInt(parts[0]);
-  const month = parseInt(parts[1]) - 1;
-  const day = parseInt(parts[2]);
-  const date = new Date(year, month, day);
-  const numVal = parseInt(value) || 0;
-  if (numVal > 0) {
-    if (unit === 'days') date.setDate(date.getDate() - numVal);
-    else if (unit === 'months') date.setMonth(date.getMonth() - numVal);
-  }
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, '0');
-  const dd = String(date.getDate()).padStart(2, '0');
-  return `${yyyy}-${mm}-${dd}`;
-}
+        // แสดงหน้าข้อมูลลงในฟอร์มการตั้งค่า
+        function loadSettingsToForm() {
+            const config = getAppConfig();
+            document.getElementById('settings-gas-url').value = localStorage.getItem('gas_url') || '';
+            document.getElementById('settings-admin-pin').value = localStorage.getItem('admin_pin') || '1234';
+            document.getElementById('settings-shop-owner').value = config.shopOwnerName;
+            document.getElementById('settings-shop-phone').value = config.shopOwnerPhone;
+            document.getElementById('settings-email-subject').value = config.emailTemplateSubject;
+            document.getElementById('settings-email-body').value = config.emailTemplateBody;
+        }
 
-function toThaiDateString(dateStr) {
-  if (!dateStr) return '-';
-  const parts = dateStr.split('-');
-  if (parts.length !== 3) return dateStr;
-  const year = parseInt(parts[0]) + 543;
-  const month = parseInt(parts[1]);
-  const day = parseInt(parts[2]);
-  const thaiMonths = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
-  return `${day} ${thaiMonths[month - 1]} พ.ศ. ${year}`;
-}
+        // จัดเก็บค่าในหน้าจอสกรีน
+        async function saveSettingsForm() {
+            const pin = document.getElementById('settings-admin-pin').value.trim();
+            const url = document.getElementById('settings-gas-url').value.trim();
+            const owner = document.getElementById('settings-shop-owner').value.trim();
+            const phone = document.getElementById('settings-shop-phone').value.trim();
+            const subject = document.getElementById('settings-email-subject').value.trim();
+            const body = document.getElementById('settings-email-body').value.trim();
 
-function updateLivePreview() {
-  const config = getAppConfig();
-  const custName = document.getElementById('cust-name').value || '[ชื่อลูกค้า]';
-  const custCar = document.getElementById('cust-car').value || '[ยี่ห้อรถ/ทะเบียน]';
-  const serviceTopic = document.getElementById('service-topic').value || '[เรื่องบริการที่ต้องการทำ]';
-  const targetDate = document.getElementById('target-date').value;
-  const noticeVal = document.getElementById('notice-value').value;
-  const noticeUnit = document.getElementById('notice-unit').value;
+            if (!url) {
+                showToast('กรุณาระบุ Web App URL', 'error');
+                return;
+            }
 
-  let sendDateText = '-';
-  if (targetDate) sendDateText = toThaiDateString(calculateNoticeDate(targetDate, noticeVal, noticeUnit));
+            if (pin.length !== 4 || isNaN(pin)) {
+                showToast('รหัสผ่าน PIN ต้องเป็นตัวเลข 4 หลักเท่านั้น', 'error');
+                return;
+            }
 
-  document.getElementById('preview-send-date-alert').innerHTML = `<i class="fa-solid fa-clock"></i> จะส่งแจ้งเตือนวันที่: <strong>${sendDateText}</strong>`;
+            // บันทึกเฉพาะค่าความปลอดภัยลง LocalStorage
+            localStorage.setItem('admin_pin', pin);
+            localStorage.setItem('gas_url', url);
 
-  const formattedTargetDate = targetDate ? toThaiDateString(targetDate) : '[วันนัดบริการ]';
-  let subject = config.emailTemplateSubject
-    .replace(/\[CUSTOMER_NAME\]/g, custName).replace(/\[CAR_DETAILS\]/g, custCar)
-    .replace(/\[SERVICE_TOPIC\]/g, serviceTopic).replace(/\[TARGET_DATE\]/g, formattedTargetDate);
-  let body = config.emailTemplateBody
-    .replace(/\[CUSTOMER_NAME\]/g, custName).replace(/\[CAR_DETAILS\]/g, custCar)
-    .replace(/\[SERVICE_TOPIC\]/g, serviceTopic).replace(/\[TARGET_DATE\]/g, formattedTargetDate)
-    .replace(/\[SHOP_PHONE\]/g, config.shopOwnerPhone).replace(/\[SHOP_OWNER\]/g, config.shopOwnerName);
+            setLoader(true, 'กำลังบันทึกตั้งค่าลง Google Sheets...');
 
-  document.getElementById('preview-subject-text').innerText = `Subject: ${subject}`;
-  document.getElementById('preview-body-text').innerText = body;
-}
+            try {
+                // ส่งคำร้องเซฟฝั่งสเปรดชีต
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'saveSettings',
+                        shopOwnerName: owner,
+                        shopOwnerPhone: phone,
+                        emailTemplateSubject: subject,
+                        emailTemplateBody: body
+                    })
+                });
 
-function insertTag(tag) {
-  const textarea = document.getElementById('settings-email-body');
-  const startPos = textarea.selectionStart;
-  const endPos = textarea.selectionEnd;
-  const text = textarea.value;
-  textarea.value = text.substring(0, startPos) + tag + text.substring(endPos, text.length);
-  textarea.focus();
-  textarea.selectionStart = startPos + tag.length;
-  textarea.selectionEnd = startPos + tag.length;
-  updateLivePreview();
-}
+                const result = await response.json();
+                
+                if (result.success) {
+                    showToast('บันทึกข้อมูลและอัปเดตสเปรดชีตเรียบร้อย!', 'success');
+                    // อัปเดตในเครื่อง
+                    localStorage.setItem('shop_owner', owner);
+                    localStorage.setItem('shop_phone', phone);
+                    localStorage.setItem('email_subject', subject);
+                    localStorage.setItem('email_body', body);
+                    
+                    updateLivePreview();
+                } else {
+                    showToast('ไม่สามารถเซฟข้อมูลลงชีตได้: ' + result.error, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('เซฟข้อมูลผิดพลาด ลองตรวจสอบ Web App URL อีกครั้ง', 'error');
+            } finally {
+                setLoader(false);
+            }
+        }
 
-// ============ SCHEDULES CRUD ============
-async function submitNewSchedule(e) {
-  e.preventDefault();
-  const url = localStorage.getItem('gas_url');
-  if (!url) { showToast('กรุณากรอกและบันทึก URL API ในหน้าตั้งค่าก่อน', 'error'); return; }
+        // ทดสอบการเชื่อมต่อ API ของตัวแอปสคริปต์
+        async function testConnection() {
+            const url = document.getElementById('settings-gas-url').value.trim();
+            if (!url) {
+                showToast('กรุณาระบุ Web App URL ก่อนกดทดสอบ', 'error');
+                return;
+            }
 
-  const customerName = document.getElementById('cust-name').value;
-  const customerEmail = document.getElementById('cust-email').value;
-  const customerPhone = document.getElementById('cust-phone').value;
-  const carDetails = document.getElementById('cust-car').value;
-  const serviceTopic = document.getElementById('service-topic').value;
-  const targetDate = document.getElementById('target-date').value;
-  const val = document.getElementById('notice-value').value;
-  const unit = document.getElementById('notice-unit').value;
-  const serviceCategory = document.getElementById('service-cat').value;
-  const noticeDays = unit === 'days' ? val : 0;
-  const noticeMonths = unit === 'months' ? val : 0;
+            setLoader(true, 'กำลังตรวจสอบคิวงานพ่อมดนิสสัน...');
+            try {
+                const res = await fetch(`${url}?action=testConnection`);
+                const data = await res.json();
+                if (data.success) {
+                    showToast('เชื่อมต่อสำเร็จ! ' + (data.message || ''), 'success');
+                    localStorage.setItem('gas_url', url); // เซฟชั่วคราว
+                } else {
+                    showToast('เชื่อมต่อไม่สำเร็จ: ' + data.error, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('เกิดข้อผิดพลาดในการเชื่อมต่อ อาจเป็นเพราะสิทธิ์ CORS หรือลิงก์ยังไม่สมบูรณ์', 'error');
+            } finally {
+                setLoader(false);
+            }
+        }
 
-  setLoader(true, 'กำลังเสกคิวลงสเปรดชีต...');
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'addSchedule', customerName, customerEmail, customerPhone, carDetails, serviceTopic, targetDate, noticeDays, noticeMonths, serviceCategory })
-    });
-    const result = await response.json();
-    if (result.success) {
-      showToast('เพิ่มรายการนัดหมายสำเร็จแล้ว!', 'success');
-      document.getElementById('new-schedule-form').reset();
-      document.getElementById('notice-value').value = '7';
-      document.getElementById('notice-unit').value = 'days';
-      document.getElementById('service-cat').value = 'ทั่วไป/อื่นๆ';
-      await loadAllData(false);
-      switchTab('dashboard');
-    } else { showToast('เกิดข้อผิดพลาดในการบันทึก: ' + result.error, 'error'); }
-  } catch (err) {
-    console.error(err);
-    showToast('ไม่สามารถเซฟข้อมูลลง API ได้ โปรดเช็คสิทธิเชื่อมต่อ', 'error');
-  } finally { setLoader(false); }
-}
+        // --- คำนวณวันเวลานัดหมายล่วงหน้าและจัดทำพรีวิวคิว ---
 
-function updateGauges(total, pending, sent) {
-  const C = 2 * Math.PI * 32; // ~201.06
-  const pendPct = total > 0 ? pending / total : 0;
-  const sentPct = total > 0 ? sent / total : 0;
-  document.getElementById('gauge-pending').setAttribute('stroke-dasharray', `${(pendPct * C).toFixed(1)} ${C.toFixed(1)}`);
-  document.getElementById('gauge-sent').setAttribute('stroke-dasharray', `${(sentPct * C).toFixed(1)} ${C.toFixed(1)}`);
-}
+        // คำนวณวันที่ต้องส่งจริงในหน่วย Local Timezone
+        function calculateNoticeDate(targetDateStr, value, unit) {
+            if (!targetDateStr) return '';
+            const parts = targetDateStr.split('-');
+            if (parts.length !== 3) return '';
+            
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1; // 0-indexed
+            const day = parseInt(parts[2]);
+            
+            const date = new Date(year, month, day);
+            const numVal = parseInt(value) || 0;
 
-function renderSchedules() {
-  const query = document.getElementById('search-query').value.toLowerCase().trim();
-  const filterStatus = document.getElementById('filter-status').value;
-  const filterCategory = document.getElementById('filter-category').value;
-  const cardsDiv = document.getElementById('schedules-cards-div');
+            if (numVal > 0) {
+                if (unit === 'days') {
+                    date.setDate(date.getDate() - numVal);
+                } else if (unit === 'months') {
+                    date.setMonth(date.getMonth() - numVal);
+                }
+            }
+            
+            const yyyy = date.getFullYear();
+            const mm = String(date.getMonth() + 1).padStart(2, '0');
+            const dd = String(date.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
 
-  const filtered = allSchedules.filter(item => {
-    const matchesSearch =
-      item.customerName.toLowerCase().includes(query) ||
-      item.customerPhone.toLowerCase().includes(query) ||
-      item.carDetails.toLowerCase().includes(query) ||
-      item.serviceTopic.toLowerCase().includes(query);
-    const matchesStatus = filterStatus === 'all' || item.status === filterStatus;
-    const matchesCategory = filterCategory === 'all' || item.serviceCategory === filterCategory;
-    return matchesSearch && matchesStatus && matchesCategory;
-  });
+        // ฟังก์ชันช่วยจัดรูปแบบข้อความไทย
+        function toThaiDateString(dateStr) {
+            if (!dateStr) return '-';
+            const parts = dateStr.split('-');
+            if (parts.length !== 3) return dateStr;
+            const year = parseInt(parts[0]) + 543; // แปลง ค.ศ. เป็น พ.ศ.
+            const month = parseInt(parts[1]);
+            const day = parseInt(parts[2]);
+            const thaiMonths = [
+                "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+                "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"
+            ];
+            return `${day} ${thaiMonths[month - 1]} พ.ศ. ${year}`;
+        }
 
-  const total = allSchedules.length;
-  const pending = allSchedules.filter(i => i.status === 'Pending').length;
-  const sent = allSchedules.filter(i => i.status === 'Sent').length;
-  const todayStr = new Date().toISOString().split('T')[0];
-  const todayOrOverdue = allSchedules.filter(i => i.status === 'Pending' && i.scheduledSendDate && i.scheduledSendDate <= todayStr).length;
+        // อัปเดตการแสดงผลสดบนหน้าจอลงทะเบียน (Real-time Live Preview)
+        function updateLivePreview() {
+            const config = getAppConfig();
+            
+            const custName = document.getElementById('cust-name').value || '[ชื่อลูกค้า]';
+            const custCar = document.getElementById('cust-car').value || '[ยี่ห้อรถ/ทะเบียน]';
+            const serviceTopic = document.getElementById('service-topic').value || '[เรื่องบริการที่ต้องการทำ]';
+            const targetDate = document.getElementById('target-date').value;
+            const noticeVal = document.getElementById('notice-value').value;
+            const noticeUnit = document.getElementById('notice-unit').value;
 
-  document.getElementById('stat-total').innerText = String(total).padStart(3, '0');
-  document.getElementById('stat-pending').innerText = pending;
-  document.getElementById('stat-sent').innerText = sent;
-  document.getElementById('stat-today').innerText = todayOrOverdue;
-  updateGauges(total, pending, sent);
+            // คำนวณวันส่ง
+            let sendDateText = '-';
+            if (targetDate) {
+                const calculatedDate = calculateNoticeDate(targetDate, noticeVal, noticeUnit);
+                sendDateText = toThaiDateString(calculatedDate);
+            }
+            
+            document.getElementById('preview-send-date-alert').innerHTML = `
+                <i class="fa-solid fa-clock"></i> ระบบจะส่งเมลแจ้งเตือนอัตโนมัติในวันที่: <strong>${sendDateText}</strong>
+            `;
 
-  if (filtered.length === 0) {
-    cardsDiv.innerHTML = `
-      <div class="ticket p-8 text-center text-steel">
-        <i class="fa-solid fa-folder-open text-2xl mb-3 block"></i>
-        <p class="text-xs">${allSchedules.length === 0 ? 'ยังไม่มีคิวลงทะเบียนในระบบ' : 'ไม่พบคิวที่ค้นหาตามเงื่อนไข'}</p>
-      </div>`;
-    return;
-  }
+            // ดึงเทมเพลตมาจัดวาง
+            const formattedTargetDate = targetDate ? toThaiDateString(targetDate) : '[วันนัดบริการ]';
+            
+            let subject = config.emailTemplateSubject
+                .replace(/\[CUSTOMER_NAME\]/g, custName)
+                .replace(/\[CAR_DETAILS\]/g, custCar)
+                .replace(/\[SERVICE_TOPIC\]/g, serviceTopic)
+                .replace(/\[TARGET_DATE\]/g, formattedTargetDate);
 
-  cardsDiv.innerHTML = '';
-  filtered.forEach(item => {
-    const statusBadge = item.status === 'Sent'
-      ? '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-medium bg-spark/10 text-spark border border-spark/25"><i class="fa-solid fa-circle-check"></i> ส่งแล้ว</span>'
-      : '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9.5px] font-medium bg-gold/10 text-gold border border-gold/25"><i class="fa-solid fa-hourglass-start"></i> รอดำเนินการ</span>';
+            let body = config.emailTemplateBody
+                .replace(/\[CUSTOMER_NAME\]/g, custName)
+                .replace(/\[CAR_DETAILS\]/g, custCar)
+                .replace(/\[SERVICE_TOPIC\]/g, serviceTopic)
+                .replace(/\[TARGET_DATE\]/g, formattedTargetDate)
+                .replace(/\[SHOP_PHONE\]/g, config.shopOwnerPhone)
+                .replace(/\[SHOP_OWNER\]/g, config.shopOwnerName);
 
-    const catText = item.serviceCategory || 'ทั่วไป/อื่นๆ';
-    let catColorClass = "bg-panel2 text-steel border-line";
-    if (catText === "เช็คระยะ") catColorClass = "bg-spark/10 text-spark border-spark/25";
-    else if (catText === "ซ่อมทั่วไป") catColorClass = "bg-blue-500/10 text-blue-400 border-blue-500/25";
-    else if (catText === "เคลมสี/ตัวถัง") catColorClass = "bg-purple-500/10 text-purple-400 border-purple-500/25";
-    else if (catText === "ระบบแอร์") catColorClass = "bg-cyan-500/10 text-cyan-400 border-cyan-500/25";
-    else if (catText === "ด่วน/ฉุกเฉิน") catColorClass = "bg-ember/10 text-ember border-ember/25";
-    const catBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[9.5px] font-medium border ${catColorClass}">${escapeHtml(catText)}</span>`;
+            document.getElementById('preview-subject-text').innerText = `Subject: ${subject}`;
+            document.getElementById('preview-body-text').innerText = body;
+        }
 
-    let noticeText = '-';
-    if (item.noticeDays > 0) noticeText = `ล่วงหน้า ${item.noticeDays} วัน`;
-    if (item.noticeMonths > 0) noticeText = `ล่วงหน้า ${item.noticeMonths} เดือน`;
+        // ตัวช่วยวางแท็กอัตโนมัติในช่องแก้ไขเทมเพลต
+        function insertTag(tag) {
+            const textarea = document.getElementById('settings-email-body');
+            const startPos = textarea.selectionStart;
+            const endPos = textarea.selectionEnd;
+            const text = textarea.value;
+            
+            textarea.value = text.substring(0, startPos) + tag + text.substring(endPos, text.length);
+            textarea.focus();
+            textarea.selectionStart = startPos + tag.length;
+            textarea.selectionEnd = startPos + tag.length;
+            
+            updateLivePreview();
+        }
 
-    cardsDiv.innerHTML += `
-      <div class="ticket px-4 pt-4 pb-3.5">
-        <div class="flex justify-between items-start gap-2 pb-3">
-          <div class="min-w-0">
-            <p class="font-head font-semibold text-white text-sm truncate">${escapeHtml(item.customerName)}</p>
-            <p class="text-[10px] text-steel mt-0.5 truncate"><i class="fa-solid fa-envelope mr-1"></i>${escapeHtml(item.customerEmail)}</p>
-          </div>
-          <div class="flex flex-col items-end gap-1 shrink-0">${statusBadge}${catBadge}</div>
-        </div>
+        // --- ส่งและแก้ไขคิวบริการ (Schedules Controller) ---
 
-        <div class="perf pt-3 space-y-1.5 text-[11px] text-slate-300">
-          <div class="flex justify-between gap-2">
-            <span class="text-steel flex items-center gap-1.5"><i class="fa-solid fa-wrench text-[10px] w-3"></i> บริการ</span>
-            <span class="text-right font-semibold text-white truncate max-w-[62%]">${escapeHtml(item.serviceTopic)}</span>
-          </div>
-          <div class="flex justify-between gap-2">
-            <span class="text-steel flex items-center gap-1.5"><i class="fa-solid fa-car text-[10px] w-3"></i> รถยนต์</span>
-            <span class="text-right truncate max-w-[62%]">${escapeHtml(item.carDetails || '-')}</span>
-          </div>
-          <div class="flex justify-between gap-2">
-            <span class="text-steel flex items-center gap-1.5"><i class="fa-solid fa-calendar-day text-[10px] w-3"></i> วันนัด</span>
-            <span class="text-right font-mono">${toThaiDateString(item.targetDate)}</span>
-          </div>
-          <div class="flex justify-between gap-2">
-            <span class="text-steel flex items-center gap-1.5"><i class="fa-solid fa-envelope-open text-[10px] w-3"></i> วันส่งแจ้งเตือน</span>
-            <span class="text-right font-mono text-gold">${toThaiDateString(item.scheduledSendDate)}</span>
-          </div>
-          <div class="flex justify-between gap-2">
-            <span class="text-steel flex items-center gap-1.5"><i class="fa-solid fa-clock text-[10px] w-3"></i> ตั้งเตือนล่วงหน้า</span>
-            <span class="text-right">${noticeText}</span>
-          </div>
-        </div>
+        // บันทึกฟอร์มลงทะเบียนคิวใหม่
+        async function submitNewSchedule(e) {
+            e.preventDefault();
+            const url = localStorage.getItem('gas_url');
+            if (!url) {
+                showToast('กรุณากรอกและบันทึก URL API ในหน้าตั้งค่าก่อน', 'error');
+                return;
+            }
 
-        <div class="perf pt-3 mt-3 flex flex-col gap-2">
-          <div class="flex gap-2">
-            ${item.customerPhone ? `<a href="tel:${item.customerPhone}" class="flex-1 text-center py-2 rounded-lg bg-panel2 border border-line text-[10.5px] font-semibold text-slate-200"><i class="fa-solid fa-phone text-[10px] mr-1"></i>โทร</a>` : '<div class="flex-1"></div>'}
-            <button class="flex-1 py-2 rounded-lg bg-gradient-to-r from-ember to-gold text-ink text-[10.5px] font-bold" onclick="sendTestEmail('${item.id}', '${escapeJS(item.customerName)}')"><i class="fa-solid fa-paper-plane text-[10px] mr-1"></i>ส่งเมล</button>
-            <button class="w-9 h-9 shrink-0 rounded-lg border border-line text-steel flex items-center justify-center" onclick="openEditModal('${item.id}')"><i class="fa-solid fa-pen-to-square text-[11px]"></i></button>
-            <button class="w-9 h-9 shrink-0 rounded-lg border border-ember2/30 text-ember2 flex items-center justify-center" onclick="openDeleteModal('${item.id}', '${escapeJS(item.customerName)}')"><i class="fa-solid fa-trash-can text-[11px]"></i></button>
-          </div>
-        </div>
-      </div>`;
-  });
-}
+            const customerName = document.getElementById('cust-name').value;
+            const customerEmail = document.getElementById('cust-email').value;
+            const customerPhone = document.getElementById('cust-phone').value;
+            const carDetails = document.getElementById('cust-car').value;
+            const serviceTopic = document.getElementById('service-topic').value;
+            const targetDate = document.getElementById('target-date').value;
+            const val = document.getElementById('notice-value').value;
+            const unit = document.getElementById('notice-unit').value;
+            const serviceCategory = document.getElementById('service-cat').value;
 
-function escapeHtml(str) {
-  if (str === undefined || str === null) return '';
-  const s = String(str);
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-}
-function escapeJS(str) {
-  if (str === undefined || str === null) return '';
-  const s = String(str);
-  return s.replace(/'/g, "\\'").replace(/"/g, '\\"');
-}
-function formatPhoneNumber(phone) {
-  if (!phone) return '';
-  let pStr = String(phone).trim();
-  if (pStr.length === 9 && (pStr.startsWith('8') || pStr.startsWith('9') || pStr.startsWith('6'))) pStr = '0' + pStr;
-  return escapeHtml(pStr);
-}
+            // แปลงหน่วยล่วงหน้าสำหรับส่งแอปสคริปต์
+            const noticeDays = unit === 'days' ? val : 0;
+            const noticeMonths = unit === 'months' ? val : 0;
 
-// ============ MODALS ============
-function openModal(id) { const m = document.getElementById(id); if (m) { m.classList.remove('hidden'); m.classList.add('flex'); const s = m.querySelector('.sheet'); requestAnimationFrame(() => s.classList.remove('sheet-hidden')); } }
-function closeModal(id) { const m = document.getElementById(id); if (m) { const s = m.querySelector('.sheet'); s.classList.add('sheet-hidden'); setTimeout(() => { m.classList.remove('flex'); m.classList.add('hidden'); }, 280); } }
+            setLoader(true, 'กำลังเสกคิวลงสเปรดชีต...');
 
-// init sheets hidden state on load for slide-up animation
-document.querySelectorAll('.modal .sheet').forEach(s => s.classList.add('sheet-hidden'));
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'addSchedule',
+                        customerName,
+                        customerEmail,
+                        customerPhone,
+                        carDetails,
+                        serviceTopic,
+                        targetDate,
+                        noticeDays,
+                        noticeMonths,
+                        serviceCategory
+                    })
+                });
 
-function openEditModal(id) {
-  const item = allSchedules.find(i => i.id === id);
-  if (!item) return;
-  document.getElementById('edit-id').value = item.id;
-  document.getElementById('edit-name').value = item.customerName;
-  document.getElementById('edit-email').value = item.customerEmail;
-  document.getElementById('edit-phone').value = formatPhoneNumber(item.customerPhone) || '';
-  document.getElementById('edit-car').value = item.carDetails || '';
-  document.getElementById('edit-topic').value = item.serviceTopic;
-  document.getElementById('edit-cat').value = item.serviceCategory || 'ทั่วไป/อื่นๆ';
-  document.getElementById('edit-target-date').value = item.targetDate;
-  if (item.noticeMonths > 0) {
-    document.getElementById('edit-notice-value').value = item.noticeMonths;
-    document.getElementById('edit-notice-unit').value = 'months';
-  } else {
-    document.getElementById('edit-notice-value').value = item.noticeDays || 0;
-    document.getElementById('edit-notice-unit').value = 'days';
-  }
-  document.getElementById('edit-reset-status').checked = item.status === 'Sent';
-  openModal('edit-modal');
-}
+                const result = await response.json();
+                if (result.success) {
+                    showToast('เพิ่มรายการนัดหมายและตารางเวลาสำเร็จแล้ว!', 'success');
+                    document.getElementById('new-schedule-form').reset();
+                    // ตั้งค่าล่วงหน้าคืนค่า
+                    document.getElementById('notice-value').value = '7';
+                    document.getElementById('notice-unit').value = 'days';
+                    document.getElementById('service-cat').value = 'ทั่วไป/อื่นๆ';
+                    
+                    // อัปโหลดข้อมูลใหม่และสลับไปหน้าแดชบอร์ด (โหลดแบบเบื้องหลัง)
+                    await loadAllData(false);
+                    switchTab('dashboard');
+                } else {
+                    showToast('เกิดข้อผิดพลาดในการบันทึก: ' + result.error, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('ไม่สามารถเซฟข้อมูลลง API ได้ โปรดเช็คสิทธิเชื่อมต่อ', 'error');
+            } finally {
+                setLoader(false);
+            }
+        }
 
-async function submitEditSchedule(e) {
-  e.preventDefault();
-  const url = localStorage.getItem('gas_url');
-  const id = document.getElementById('edit-id').value;
-  const customerName = document.getElementById('edit-name').value;
-  const customerEmail = document.getElementById('edit-email').value;
-  const customerPhone = document.getElementById('edit-phone').value;
-  const carDetails = document.getElementById('edit-car').value;
-  const serviceTopic = document.getElementById('edit-topic').value;
-  const serviceCategory = document.getElementById('edit-cat').value;
-  const targetDate = document.getElementById('edit-target-date').value;
-  const val = document.getElementById('edit-notice-value').value;
-  const unit = document.getElementById('edit-notice-unit').value;
-  const resetStatus = document.getElementById('edit-reset-status').checked;
-  const noticeDays = unit === 'days' ? val : 0;
-  const noticeMonths = unit === 'months' ? val : 0;
+        // ค้นหาและจำแนกคิวแสดงผลบนตารางแดชบอร์ด
+        function renderSchedules() {
+            const query = document.getElementById('search-query').value.toLowerCase().trim();
+            const filterStatus = document.getElementById('filter-status').value;
+            const filterCategory = document.getElementById('filter-category').value;
+            const tbody = document.getElementById('schedules-tbody');
+            const cardsDiv = document.getElementById('schedules-cards-div');
+            
+            // กรองข้อมูล
+            const filtered = allSchedules.filter(item => {
+                const matchesSearch = 
+                    item.customerName.toLowerCase().includes(query) ||
+                    item.customerPhone.toLowerCase().includes(query) ||
+                    item.carDetails.toLowerCase().includes(query) ||
+                    item.serviceTopic.toLowerCase().includes(query);
+                
+                const matchesStatus = filterStatus === 'all' || item.status === filterStatus;
+                const matchesCategory = filterCategory === 'all' || item.serviceCategory === filterCategory;
+                
+                return matchesSearch && matchesStatus && matchesCategory;
+            });
 
-  closeModal('edit-modal');
-  setLoader(true, 'กำลังปรับเปลี่ยนคิวเวทมนตร์...');
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'updateSchedule', id, customerName, customerEmail, customerPhone, carDetails, serviceTopic, serviceCategory, targetDate, noticeDays, noticeMonths, resetStatus })
-    });
-    const result = await response.json();
-    if (result.success) { showToast('แก้ไขข้อมูลคิวงานสำเร็จ!', 'success'); await loadAllData(false); }
-    else { showToast('ไม่สามารถอัปเดตข้อมูลได้: ' + result.error, 'error'); }
-  } catch (err) {
-    console.error(err);
-    showToast('เกิดข้อผิดพลาดในการเชื่อมต่อเพื่ออัปเดตข้อมูล', 'error');
-  } finally { setLoader(false); }
-}
+            // คำนวณสถิติ
+            const total = allSchedules.length;
+            const pending = allSchedules.filter(i => i.status === 'Pending').length;
+            const sent = allSchedules.filter(i => i.status === 'Sent').length;
+            
+            // นับจำนวนหมดอายุ/ส่งวันนี้
+            const todayStr = new Date().toISOString().split('T')[0];
+            const todayOrOverdue = allSchedules.filter(i => i.status === 'Pending' && i.scheduledSendDate && i.scheduledSendDate <= todayStr).length;
 
-function openDeleteModal(id, name) {
-  document.getElementById('delete-id').value = id;
-  document.getElementById('delete-cust-name').innerText = name;
-  openModal('delete-modal');
-}
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-pending').innerText = pending;
+            document.getElementById('stat-sent').innerText = sent;
+            document.getElementById('stat-today').innerText = todayOrOverdue;
 
-async function confirmDeleteSchedule() {
-  const id = document.getElementById('delete-id').value;
-  const url = localStorage.getItem('gas_url');
-  closeModal('delete-modal');
-  setLoader(true, 'กำลังลบล้างรายการคิว...');
-  try {
-    const response = await fetch(url, { method: 'POST', body: JSON.stringify({ action: 'deleteSchedule', id }) });
-    const result = await response.json();
-    if (result.success) { showToast('ลบรายการคิวออกจากชีตสำเร็จแล้ว!', 'success'); await loadAllData(false); }
-    else { showToast('เกิดข้อผิดพลาดในการลบ: ' + result.error, 'error'); }
-  } catch (err) {
-    console.error(err);
-    showToast('ไม่สามารถเชื่อมต่อเพื่อลบข้อมูลได้', 'error');
-  } finally { setLoader(false); }
-}
+            // แสดงรายการลงในตารางและการ์ดมือถือ
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-5 py-12 text-center text-slate-500">
+                            <i class="fa-solid fa-folder-open text-3xl mb-3 block"></i>
+                            <p>${allSchedules.length === 0 ? 'ยังไม่มีคิวลงทะเบียนในระบบ' : 'ไม่พบคิวที่ค้นหาตามเงื่อนไข'}</p>
+                        </td>
+                    </tr>
+                `;
+                cardsDiv.innerHTML = `
+                    <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-8 text-center text-slate-500">
+                        <i class="fa-solid fa-folder-open text-3xl mb-3 block"></i>
+                        <p>${allSchedules.length === 0 ? 'ยังไม่มีคิวลงทะเบียนในระบบ' : 'ไม่พบคิวที่ค้นหาตามเงื่อนไข'}</p>
+                    </div>
+                `;
+                return;
+            }
 
-async function sendTestEmail(id, name) {
-  const url = localStorage.getItem('gas_url');
-  if (!url) return;
-  setLoader(true, `กำลังยิงอีเมลแจ้งเตือนหาคุณ ${name}...`);
-  try {
-    const response = await fetch(url, { method: 'POST', body: JSON.stringify({ action: 'sendTestEmail', id }) });
-    const result = await response.json();
-    if (result.success) { showToast(`ส่งเมลหาคุณ ${name} สำเร็จ!`, 'success'); await loadAllData(false); }
-    else { showToast('ยิงอีเมลล้มเหลว: ' + result.error, 'error'); }
-  } catch (err) {
-    console.error(err);
-    showToast('พบข้อผิดพลาดในการเรียกส่งเมลทันที', 'error');
-  } finally { setLoader(false); }
-}
+            tbody.innerHTML = '';
+            cardsDiv.innerHTML = '';
+            filtered.forEach(item => {
+                const statusBadge = item.status === 'Sent' 
+                    ? '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"><i class="fa-solid fa-circle-check"></i> ส่งแล้ว</span>'
+                    : '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20"><i class="fa-solid fa-hourglass-start"></i> รอดำเนินการ</span>';
+                
+                const catText = item.serviceCategory || 'ทั่วไป/อื่นๆ';
+                let catColorClass = "bg-slate-800/40 text-slate-400 border-slate-800";
+                if (catText === "เช็คระยะ") catColorClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+                else if (catText === "ซ่อมทั่วไป") catColorClass = "bg-blue-500/10 text-blue-400 border-blue-500/20";
+                else if (catText === "เคลมสี/ตัวถัง") catColorClass = "bg-purple-500/10 text-purple-400 border-purple-500/20";
+                else if (catText === "ระบบแอร์") catColorClass = "bg-cyan-500/10 text-cyan-400 border-cyan-500/20";
+                else if (catText === "ด่วน/ฉุกเฉิน") catColorClass = "bg-rose-500/10 text-rose-400 border-rose-500/20";
+                
+                const catBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium border ${catColorClass}">${escapeHtml(catText)}</span>`;
 
-// ============ CSV IMPORT / EXPORT ============
-function exportToCSV() {
-  if (allSchedules.length === 0) { showToast('ไม่มีข้อมูลที่จะส่งออก', 'warning'); return; }
-  let csvContent = "\uFEFF";
-  csvContent += "ชื่อลูกค้า,อีเมล,เบอร์โทรศัพท์,รุ่นรถ/ทะเบียน,เรื่องบริการ,วันกำหนดนัด,วันแจ้งเตือน,ประเภทงาน,สถานะ\n";
-  allSchedules.forEach(item => {
-    const name = `"${item.customerName.replace(/"/g, '""')}"`;
-    const email = `"${item.customerEmail.replace(/"/g, '""')}"`;
-    const phone = `"${(item.customerPhone || '').replace(/"/g, '""')}"`;
-    const car = `"${(item.carDetails || '').replace(/"/g, '""')}"`;
-    const topic = `"${item.serviceTopic.replace(/"/g, '""')}"`;
-    const target = `"${item.targetDate}"`;
-    const send = `"${item.scheduledSendDate}"`;
-    const cat = `"${(item.serviceCategory || 'ทั่วไป/อื่นๆ').replace(/"/g, '""')}"`;
-    const status = `"${item.status}"`;
-    csvContent += `${name},${email},${phone},${car},${topic},${target},${send},${cat},${status}\n`;
-  });
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.setAttribute("href", url);
-  link.setAttribute("download", `Nissan_Wizard_Schedules_${new Date().toISOString().split('T')[0]}.csv`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  showToast('ส่งออกไฟล์ CSV สำเร็จ!', 'success');
-}
+                // แจ้งล่วงหน้าอย่างไร
+                let noticeText = '-';
+                if (item.noticeDays > 0) noticeText = `ล่วงหน้า ${item.noticeDays} วัน`;
+                if (item.noticeMonths > 0) noticeText = `ล่วงหน้า ${item.noticeMonths} เดือน`;
 
-function downloadCSVTemplate(e) {
-  if (e) e.preventDefault();
-  let csvContent = "\uFEFF";
-  csvContent += "ชื่อลูกค้า,อีเมล,เบอร์โทรศัพท์,รุ่นรถ/ทะเบียน,เรื่องบริการ,วันกำหนดนัด(YYYY-MM-DD),ตั้งล่วงหน้า(ตัวเลข),หน่วยแจ้ง(days/months),ประเภทงาน\n";
-  csvContent += "สมชาย ใจดี,somchai@gmail.com,0812345678,Nissan Almera กข-1234 กทม.,เปลี่ยนน้ำมันเครื่อง,2026-08-15,7,days,เช็คระยะ\n";
-  csvContent += "สมหญิง รักดี,somying@gmail.com,0898765432,Nissan Navara 3กข-5678,เปลี่ยนสายพานแอร์,2026-09-01,1,months,ระบบแอร์\n";
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.setAttribute("href", url);
-  link.setAttribute("download", "Nissan_Wizard_Import_Template.csv");
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
+                // จำนวนครั้งที่แจ้งเตือน
+                const sendCountVal = item.sendCount || 0;
+                const sendCountText = sendCountVal > 0 
+                    ? `<span class="inline-flex items-center gap-1 text-[10px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded font-semibold"><i class="fa-solid fa-paper-plane text-[9px]"></i> เตือนแล้ว ${sendCountVal} ครั้ง</span>`
+                    : `<span class="inline-flex items-center gap-1 text-[10px] text-slate-500 bg-slate-800/40 px-1.5 py-0.5 rounded"><i class="fa-solid fa-paper-plane text-[9px]"></i> ยังไม่เคยเตือน</span>`;
 
-let parsedCSVData = [];
+                // Desktop Row
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-900/30 transition border-b border-slate-800/40">
+                        <td class="px-5 py-3">
+                            <div class="font-bold text-white text-xs sm:text-sm">${escapeHtml(item.customerName)}</div>
+                            <div class="text-[10px] sm:text-xs text-slate-400 mt-0.5 flex items-center gap-1.5 flex-wrap">
+                                <span class="flex items-center gap-1"><i class="fa-solid fa-envelope"></i> ${escapeHtml(item.customerEmail)}</span>
+                                ${item.customerPhone ? `<span class="text-slate-600">|</span> <span class="flex items-center gap-1"><i class="fa-solid fa-phone"></i> ${formatPhoneNumber(item.customerPhone)}</span>` : ''}
+                            </div>
+                        </td>
+                        <td class="px-5 py-3 text-slate-300 text-xs sm:text-sm">${escapeHtml(item.carDetails || '-')}</td>
+                        <td class="px-5 py-3 text-xs sm:text-sm">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <strong class="text-white font-semibold">${escapeHtml(item.serviceTopic)}</strong>
+                                ${catBadge}
+                            </div>
+                            <div class="text-[10px] text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                                <span>ตั้งแจ้ง: ${noticeText}</span>
+                                <span class="text-slate-700">|</span>
+                                ${sendCountText}
+                            </div>
+                        </td>
+                        <td class="px-5 py-3 text-xs sm:text-sm whitespace-nowrap text-slate-300"><i class="fa-solid fa-calendar-day text-rose-500 mr-1"></i> ${toThaiDateString(item.targetDate)}</td>
+                        <td class="px-5 py-3 text-xs sm:text-sm whitespace-nowrap text-slate-300"><i class="fa-solid fa-envelope-open text-amber-500 mr-1"></i> ${toThaiDateString(item.scheduledSendDate)}</td>
+                        <td class="px-5 py-3 text-xs sm:text-sm whitespace-nowrap">${statusBadge}</td>
+                        <td class="px-5 py-3 text-center">
+                            <div class="flex gap-1.5 justify-center">
+                                <button class="w-8 h-8 rounded-lg border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 hover:bg-emerald-500 hover:text-black transition flex items-center justify-center cursor-pointer" onclick="quickAddService('${escapeJS(item.customerName)}', '${escapeJS(item.customerEmail)}', '${escapeJS(item.customerPhone)}', '${escapeJS(item.carDetails)}')" title="เพิ่มคิวบริการอื่นให้ลูกค้ารายเดิม">
+                                    <i class="fa-solid fa-plus-circle text-xs"></i>
+                                </button>
+                                <button class="w-8 h-8 rounded-lg border border-amber-500/20 bg-amber-500/5 text-amber-500 hover:bg-amber-500 hover:text-black transition flex items-center justify-center cursor-pointer" onclick="sendTestEmail('${item.id}', '${escapeJS(item.customerName)}')" title="ส่งเมลทันที">
+                                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                                </button>
+                                <button class="w-8 h-8 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800/50 transition flex items-center justify-center cursor-pointer" onclick="openEditModal('${item.id}')" title="แก้ไขคิว">
+                                    <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                </button>
+                                <button class="w-8 h-8 rounded-lg border border-rose-950/40 text-rose-500 hover:bg-rose-950/20 transition flex items-center justify-center cursor-pointer" onclick="openDeleteModal('${item.id}', '${escapeJS(item.customerName)}')" title="ลบคิว">
+                                    <i class="fa-solid fa-trash-can text-xs"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
 
-function handleCSVFileSelect(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) { parseCSV(e.target.result); };
-  reader.readAsText(file, 'UTF-8');
-}
+                // Mobile Card
+                cardsDiv.innerHTML += `
+                    <div class="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-xl p-4 space-y-3 shadow-lg shadow-black/20">
+                        <div class="flex justify-between items-start gap-2 border-b border-slate-800/50 pb-2.5">
+                            <div>
+                                <span class="font-bold text-white text-sm sm:text-base">${escapeHtml(item.customerName)}</span>
+                                <div class="text-[10px] text-slate-400 mt-1 flex flex-wrap items-center gap-1.5">
+                                    <span class="flex items-center gap-1"><i class="fa-solid fa-envelope"></i> ${escapeHtml(item.customerEmail)}</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-end gap-1.5 shrink-0">
+                                ${statusBadge}
+                                ${catBadge}
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-xs text-slate-300">
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-car text-[11px]"></i> รถยนต์:</span>
+                                <span class="text-right font-medium text-slate-200">${escapeHtml(item.carDetails || '-')}</span>
+                            </div>
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-wrench text-[11px]"></i> บริการ:</span>
+                                <span class="text-right font-bold text-white">${escapeHtml(item.serviceTopic)}</span>
+                            </div>
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-calendar-day text-[11px]"></i> วันกำหนดนัด:</span>
+                                <span class="text-right font-medium text-slate-200">${toThaiDateString(item.targetDate)}</span>
+                            </div>
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-envelope-open text-[11px]"></i> วันส่งแจ้งเตือน:</span>
+                                <span class="text-right font-medium text-slate-200">${toThaiDateString(item.scheduledSendDate)}</span>
+                            </div>
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-clock text-[11px]"></i> ตั้งเตือนล่วงหน้า:</span>
+                                <span class="text-right font-medium text-slate-200">${noticeText}</span>
+                            </div>
+                            <div class="flex justify-between items-center gap-2">
+                                <span class="text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-paper-plane text-[11px]"></i> จำนวนที่เตือนแล้ว:</span>
+                                <span class="text-right font-medium text-slate-200">
+                                    ${sendCountVal > 0 ? `<span class="text-emerald-400 font-bold">${sendCountVal} ครั้ง</span>` : '<span class="text-slate-500">ยังไม่เคยเตือน</span>'}
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-start gap-2 pt-1 border-t border-slate-800/30 mt-1">
+                                <span class="text-slate-500 flex items-center gap-1.5 mt-0.5"><i class="fa-solid fa-phone text-[11px]"></i> ติดต่อ:</span>
+                                <span class="text-right flex flex-col items-end gap-1">
+                                    ${item.customerPhone ? `<a href="tel:${item.customerPhone}" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-amber-500/10 hover:bg-amber-500 hover:text-black border border-amber-500/20 text-amber-500 transition text-[11px] font-semibold"><i class="fa-solid fa-phone text-[10px]"></i> โทรหาลูกค้า</a>` : '-'}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2 pt-2 border-t border-slate-800/50">
+                            <button class="w-full py-2.5 rounded-lg bg-gradient-to-r from-rose-600 to-amber-500 hover:brightness-110 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer" onclick="sendTestEmail('${item.id}', '${escapeJS(item.customerName)}')" title="ส่งเมลทันที">
+                                <i class="fa-solid fa-paper-plane"></i> ส่งทดสอบแจ้งเตือนทันที
+                            </button>
+                            <button class="w-full py-2 rounded-lg border border-emerald-500/30 bg-emerald-500/5 text-emerald-400 hover:bg-emerald-500 hover:text-black text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer" onclick="quickAddService('${escapeJS(item.customerName)}', '${escapeJS(item.customerEmail)}', '${escapeJS(item.customerPhone)}', '${escapeJS(item.carDetails)}')" title="เพิ่มคิวบริการอื่นให้ลูกค้ารายเดิม">
+                                <i class="fa-solid fa-plus-circle"></i> เพิ่มบริการอื่นให้ลูกค้ารายเดิม
+                            </button>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button class="py-2 rounded-lg border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/50 text-xs font-semibold flex items-center justify-center gap-1 transition cursor-pointer" onclick="openEditModal('${item.id}')" title="แก้ไขคิว">
+                                    <i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูล
+                                </button>
+                                <button class="py-2 rounded-lg border border-rose-950/40 text-rose-500 hover:bg-rose-950/20 text-xs font-semibold flex items-center justify-center gap-1 transition cursor-pointer" onclick="openDeleteModal('${item.id}', '${escapeJS(item.customerName)}')" title="ลบคิว">
+                                    <i class="fa-solid fa-trash-can"></i> ลบรายการ
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
 
-function parseCSV(text) {
-  parsedCSVData = [];
-  const lines = text.split(/\r\n|\n/);
-  if (lines.length <= 1) { showToast('ไฟล์ CSV ว่างเปล่าหรือรูปแบบไม่ถูกต้อง', 'error'); return; }
-  const tbody = document.getElementById('csv-preview-tbody');
-  tbody.innerHTML = '';
-  let count = 0;
-  for (let i = 1; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-    const columns = splitCSVLine(line);
-    if (columns.length < 5) continue;
-    const customerName = columns[0] || '';
-    const customerEmail = columns[1] || '';
-    const customerPhone = columns[2] || '';
-    const carDetails = columns[3] || '';
-    const serviceTopic = columns[4] || '';
-    const targetDate = columns[5] || '';
-    const noticeVal = columns[6] || '7';
-    const noticeUnit = columns[7] || 'days';
-    const serviceCategory = columns[8] || 'ทั่วไป/อื่นๆ';
-    if (!customerName || !customerEmail || !serviceTopic || !targetDate) continue;
-    const noticeDays = noticeUnit === 'days' ? parseInt(noticeVal) || 0 : 0;
-    const noticeMonths = noticeUnit === 'months' ? parseInt(noticeVal) || 0 : 0;
-    parsedCSVData.push({ customerName, customerEmail, customerPhone, carDetails, serviceTopic, targetDate, noticeDays, noticeMonths, serviceCategory });
-    if (count < 10) {
-      tbody.innerHTML += `
-        <tr>
-          <td class="px-2.5 py-2"><strong>${escapeHtml(customerName)}</strong></td>
-          <td class="px-2.5 py-2 text-slate-300">${escapeHtml(carDetails || '-')}</td>
-          <td class="px-2.5 py-2 text-slate-300">${escapeHtml(serviceTopic)}</td>
-          <td class="px-2.5 py-2 text-slate-300">${escapeHtml(targetDate)}</td>
-        </tr>`;
-    }
-    count++;
-  }
-  if (count > 10) tbody.innerHTML += `<tr><td colspan="4" class="text-center text-steel italic py-2">...และอีก ${count - 10} รายการ...</td></tr>`;
+        // --- เพิ่มบริการสำหรับลูกค้ารายเดิมแบบรวดเร็ว ---
+        function quickAddService(name, email, phone, car) {
+            // กรอกข้อมูลลงฟอร์มบันทึกคิว
+            document.getElementById('cust-name').value = name;
+            document.getElementById('cust-email').value = email;
+            document.getElementById('cust-phone').value = phone;
+            document.getElementById('cust-car').value = car;
 
-  if (parsedCSVData.length > 0) {
-    document.getElementById('csv-import-count').innerText = parsedCSVData.length;
-    document.getElementById('csv-preview-area').classList.remove('hidden');
-    document.getElementById('btn-confirm-import').disabled = false;
-    document.getElementById('upload-status-text').innerHTML = `โหลดสำเร็จ: <strong class="text-spark">${parsedCSVData.length} รายการ</strong> (แตะเพื่อเปลี่ยนไฟล์)`;
-  } else {
-    document.getElementById('csv-preview-area').classList.add('hidden');
-    document.getElementById('btn-confirm-import').disabled = true;
-    document.getElementById('upload-status-text').innerHTML = `<span class="text-ember2">ไม่พบรายการที่ถูกต้อง</span> (แตะเพื่อลองใหม่)`;
-  }
-}
+            // เคลียร์ข้อมูลเรื่องบริการและวันที่เดิมเพื่อให้ป้อนเรื่องใหม่
+            document.getElementById('service-topic').value = '';
+            document.getElementById('target-date').value = '';
+            document.getElementById('service-cat').value = 'ทั่วไป/อื่นๆ';
+            document.getElementById('notice-value').value = '7';
+            document.getElementById('notice-unit').value = 'days';
 
-function splitCSVLine(line) {
-  const result = [];
-  let current = '';
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-    if (char === '"') { inQuotes = !inQuotes; }
-    else if (char === ',' && !inQuotes) { result.push(current.trim()); current = ''; }
-    else { current += char; }
-  }
-  result.push(current.trim());
-  return result.map(val => {
-    let v = val;
-    if (v.startsWith('"') && v.endsWith('"')) v = v.substring(1, v.length - 1);
-    return v.replace(/""/g, '"');
-  });
-}
+            // อัปเดตพรีวิว
+            updateLivePreview();
 
-async function submitCSVData() {
-  const url = localStorage.getItem('gas_url');
-  if (!url || parsedCSVData.length === 0) return;
-  closeModal('import-modal');
-  setLoader(true, `กำลังนำเข้าข้อมูล ${parsedCSVData.length} รายการ...`);
-  try {
-    const response = await fetch(url, { method: 'POST', body: JSON.stringify({ action: 'bulkAddSchedules', schedules: parsedCSVData }) });
-    const result = await response.json();
-    if (result.success) {
-      showToast(`นำเข้าคิวงานเรียบร้อยแล้ว ${parsedCSVData.length} รายการ!`, 'success');
-      parsedCSVData = [];
-      document.getElementById('csv-file-input').value = '';
-      document.getElementById('csv-preview-area').classList.add('hidden');
-      document.getElementById('btn-confirm-import').disabled = true;
-      document.getElementById('upload-status-text').innerText = 'แตะเพื่อเลือกไฟล์ CSV';
-      await loadAllData(false);
-    } else { showToast('การนำเข้าล้มเหลว: ' + result.error, 'error'); }
-  } catch (err) {
-    console.error(err);
-    showToast('การเชื่อมต่อกับ API เพื่อนำเข้าข้อมูลล้มเหลว', 'error');
-  } finally { setLoader(false); }
-}
-</script>
+            // สลับแท็บไปที่หน้าบันทึกคิว
+            switchTab('register');
+
+            // แสดงแจ้งเตือนแบบ Toast
+            showToast('ดึงข้อมูลลูกค้ารายเดิมลงฟอร์มแล้ว กรุณากรอกเรื่องบริการและวันกำหนดนัดรอบใหม่', 'success');
+        }
+
+        // --- ตัวช่วยความปลอดภัยและการป้องกัน XSS ---
+        function escapeHtml(str) {
+            if (str === undefined || str === null) return '';
+            const s = String(str);
+            return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        // ตัวช่วยสำหรับใช้ในฟังก์ชัน JavaScript onClick parameters
+        function escapeJS(str) {
+            if (str === undefined || str === null) return '';
+            const s = String(str);
+            return s.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+
+        function formatPhoneNumber(phone) {
+            if (!phone) return '';
+            let pStr = String(phone).trim();
+            if (pStr.length === 9 && (pStr.startsWith('8') || pStr.startsWith('9') || pStr.startsWith('6'))) {
+                pStr = '0' + pStr;
+            }
+            return escapeHtml(pStr);
+        }
+
+        // --- จัดการ Modals ---
+        function openModal(id) {
+            const m = document.getElementById(id);
+            if (m) {
+                m.classList.remove('hidden');
+                m.classList.add('flex');
+            }
+        }
+
+        // ปิดโมดอล
+        function closeModal(id) {
+            const m = document.getElementById(id);
+            if (m) {
+                m.classList.remove('flex');
+                m.classList.add('hidden');
+            }
+        }
+
+        // เปิด Modal แก้ไขข้อมูล
+        function openEditModal(id) {
+            const item = allSchedules.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('edit-id').value = item.id;
+            document.getElementById('edit-name').value = item.customerName;
+            document.getElementById('edit-email').value = item.customerEmail;
+            document.getElementById('edit-phone').value = formatPhoneNumber(item.customerPhone) || '';
+            document.getElementById('edit-car').value = item.carDetails || '';
+            document.getElementById('edit-topic').value = item.serviceTopic;
+            document.getElementById('edit-cat').value = item.serviceCategory || 'ทั่วไป/อื่นๆ';
+            document.getElementById('edit-target-date').value = item.targetDate;
+
+            // แยกวิเคราะห์การแจ้งเตือน
+            if (item.noticeMonths > 0) {
+                document.getElementById('edit-notice-value').value = item.noticeMonths;
+                document.getElementById('edit-notice-unit').value = 'months';
+            } else {
+                document.getElementById('edit-notice-value').value = item.noticeDays || 0;
+                document.getElementById('edit-notice-unit').value = 'days';
+            }
+
+            // ถ้าส่งแล้วให้แนะนำกล่องติ๊กรีเซ็ต
+            const resetContainer = document.getElementById('edit-reset-status').parentElement;
+            if (item.status === 'Sent') {
+                resetContainer.classList.remove('hidden');
+                resetContainer.classList.add('flex');
+                document.getElementById('edit-reset-status').checked = true; // ติ๊กให้เลยเพื่ออำนวยความสะดวก
+            } else {
+                resetContainer.classList.remove('flex');
+                resetContainer.classList.add('hidden');
+                document.getElementById('edit-reset-status').checked = false;
+            }
+
+            openModal('edit-modal');
+        }
+
+        // ยื่นแก้ไขข้อมูลที่ได้รับการเปลี่ยน
+        async function submitEditSchedule(e) {
+            e.preventDefault();
+            const url = localStorage.getItem('gas_url');
+            const id = document.getElementById('edit-id').value;
+            
+            const customerName = document.getElementById('edit-name').value;
+            const customerEmail = document.getElementById('edit-email').value;
+            const customerPhone = document.getElementById('edit-phone').value;
+            const carDetails = document.getElementById('edit-car').value;
+            const serviceTopic = document.getElementById('edit-topic').value;
+            const serviceCategory = document.getElementById('edit-cat').value;
+            const targetDate = document.getElementById('edit-target-date').value;
+            const val = document.getElementById('edit-notice-value').value;
+            const unit = document.getElementById('edit-notice-unit').value;
+            const resetStatus = document.getElementById('edit-reset-status').checked;
+
+            const noticeDays = unit === 'days' ? val : 0;
+            const noticeMonths = unit === 'months' ? val : 0;
+
+            closeModal('edit-modal');
+            setLoader(true, 'กำลังปรับเปลี่ยนคิวเวทมนตร์...');
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'updateSchedule',
+                        id,
+                        customerName,
+                        customerEmail,
+                        customerPhone,
+                        carDetails,
+                        serviceTopic,
+                        serviceCategory,
+                        targetDate,
+                        noticeDays,
+                        noticeMonths,
+                        resetStatus
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showToast('แก้ไขข้อมูลคิวงานและคำนวณวันแจ้งเตือนใหม่สำเร็จ!', 'success');
+                    await loadAllData(false);
+                } else {
+                    showToast('ไม่สามารถอัปเดตข้อมูลได้: ' + result.error, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('เกิดข้อผิดพลาดในการเชื่อมต่อเพื่ออัปเดตข้อมูล', 'error');
+            } finally {
+                setLoader(false);
+            }
+        }
+
+        // ลบรายการคิวงาน
+        function openDeleteModal(id, name) {
+            document.getElementById('delete-id').value = id;
+            document.getElementById('delete-cust-name').innerText = name;
+            openModal('delete-modal');
+        }
+
+        async function confirmDeleteSchedule() {
+            const id = document.getElementById('delete-id').value;
+            const url = localStorage.getItem('gas_url');
+
+            closeModal('delete-modal');
+            setLoader(true, 'กำลังลบล้างรายการคิวจากคำสั่งพ่อมด...');
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'deleteSchedule',
+                        id
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showToast('ลบรายการคิวออกจากชีตสำเร็จแล้ว!', 'success');
+                    await loadAllData(false);
+                } else {
+                    showToast('เกิดข้อผิดพลาดในการลบ: ' + result.error, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('ไม่สามารถเชื่อมต่อเพื่อลบข้อมูลได้', 'error');
+            } finally {
+                setLoader(false);
+            }
+        }
+
+        // ส่งอีเมลทดสอบทันทีจากเว็บเบราว์เซอร์
+        async function sendTestEmail(id, name) {
+            const url = localStorage.getItem('gas_url');
+            if (!url) return;
+
+            setLoader(true, `กำลังยิงอีเมลแจ้งเตือนส่งด่วนหาคุณ ${name}...`);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'sendTestEmail',
+                        id
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showToast(`ส่งเมลคิวงานด่วนหาคุณ ${name} สำเร็จและอัปเดตสถานะเป็นส่งแล้ว!`, 'success');
+                    await loadAllData(false);
+                } else {
+                    showToast('ยิงอีเมลล้มเหลว: ' + result.error, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('พบข้อผิดพลาดในการเรียกส่งเมลทันที', 'error');
+            } finally {
+                setLoader(false);
+            }
+        }
+
+        // --- ระบบส่งออกและนำเข้าไฟล์ CSV (CSV Controller) ---
+
+        // ส่งออกข้อมูลในตารางเป็น CSV (ภาษาไทยเปิดใน Excel ได้ถูกต้อง)
+        function exportToCSV() {
+            if (allSchedules.length === 0) {
+                showToast('ไม่มีข้อมูลที่จะส่งออก', 'warning');
+                return;
+            }
+
+            let csvContent = "\uFEFF"; // UTF-8 BOM สำหรับป้องกันภาษาไทยเพี้ยนใน Excel
+            // Headers
+            csvContent += "ชื่อลูกค้า,อีเมล,เบอร์โทรศัพท์,รุ่นรถ/ทะเบียน,เรื่องบริการ,วันกำหนดนัด,วันแจ้งเตือน,ประเภทงาน,สถานะ\n";
+
+            allSchedules.forEach(item => {
+                const name = `"${item.customerName.replace(/"/g, '""')}"`;
+                const email = `"${item.customerEmail.replace(/"/g, '""')}"`;
+                const phone = `"${(item.customerPhone || '').replace(/"/g, '""')}"`;
+                const car = `"${(item.carDetails || '').replace(/"/g, '""')}"`;
+                const topic = `"${item.serviceTopic.replace(/"/g, '""')}"`;
+                const target = `"${item.targetDate}"`;
+                const send = `"${item.scheduledSendDate}"`;
+                const cat = `"${(item.serviceCategory || 'ทั่วไป/อื่นๆ').replace(/"/g, '""')}"`;
+                const status = `"${item.status}"`;
+
+                csvContent += `${name},${email},${phone},${car},${topic},${target},${send},${cat},${status}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Nissan_Wizard_Schedules_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('ส่งออกไฟล์ CSV สำเร็จ!', 'success');
+        }
+
+        // ดาวน์โหลดไฟล์เทมเพลต CSV
+        function downloadCSVTemplate(e) {
+            if (e) e.preventDefault();
+            let csvContent = "\uFEFF"; // UTF-8 BOM
+            csvContent += "ชื่อลูกค้า,อีเมล,เบอร์โทรศัพท์,รุ่นรถ/ทะเบียน,เรื่องบริการ,วันกำหนดนัด(YYYY-MM-DD),ตั้งล่วงหน้า(ตัวเลข),หน่วยแจ้ง(days/months),ประเภทงาน\n";
+            csvContent += "สมชาย ใจดี,somchai@gmail.com,0812345678,Nissan Almera กข-1234 กทม.,เปลี่ยนน้ำมันเครื่อง,2026-08-15,7,days,เช็คระยะ\n";
+            csvContent += "สมหญิง รักดี,somying@gmail.com,0898765432,Nissan Navara 3กข-5678,เปลี่ยนสายพานแอร์,2026-09-01,1,months,ระบบแอร์\n";
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "Nissan_Wizard_Import_Template.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        let parsedCSVData = [];
+
+        // เลือกไฟล์ CSV และทำการพาร์ส
+        function handleCSVFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                parseCSV(text);
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        // ฟังก์ชันช่วยพาร์ส CSV
+        function parseCSV(text) {
+            parsedCSVData = [];
+            const lines = text.split(/\r\n|\n/);
+            if (lines.length <= 1) {
+                showToast('ไฟล์ CSV ว่างเปล่าหรือรูปแบบไม่ถูกต้อง', 'error');
+                return;
+            }
+
+            const headerLine = lines[0].replace(/^\uFEFF/, ''); // ลบ BOM
+            
+            const tbody = document.getElementById('csv-preview-tbody');
+            tbody.innerHTML = '';
+
+            let count = 0;
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                const columns = splitCSVLine(line);
+                if (columns.length < 5) continue; // อย่างน้อยต้องมี ชื่อ อีเมล เรื่องนัด วันนัด
+
+                // คอลัมน์เทมเพลต: 
+                // 0: ชื่อลูกค้า, 1: อีเมล, 2: เบอร์โทร, 3: รุ่นรถ, 4: เรื่องบริการ, 5: วันกำหนดนัด(YYYY-MM-DD), 6: ล่วงหน้า(ตัวเลข), 7: หน่วยแจ้ง(days/months), 8: ประเภทงาน
+                const customerName = columns[0] || '';
+                const customerEmail = columns[1] || '';
+                const customerPhone = columns[2] || '';
+                const carDetails = columns[3] || '';
+                const serviceTopic = columns[4] || '';
+                const targetDate = columns[5] || '';
+                const noticeVal = columns[6] || '7';
+                const noticeUnit = columns[7] || 'days';
+                const serviceCategory = columns[8] || 'ทั่วไป/อื่นๆ';
+
+                if (!customerName || !customerEmail || !serviceTopic || !targetDate) {
+                    continue; // ข้อมูลที่จำเป็นขาดหายไป
+                }
+
+                const noticeDays = noticeUnit === 'days' ? parseInt(noticeVal) || 0 : 0;
+                const noticeMonths = noticeUnit === 'months' ? parseInt(noticeVal) || 0 : 0;
+
+                parsedCSVData.push({
+                    customerName,
+                    customerEmail,
+                    customerPhone,
+                    carDetails,
+                    serviceTopic,
+                    targetDate,
+                    noticeDays,
+                    noticeMonths,
+                    serviceCategory
+                });
+
+                // แสดงพรีวิว (แถวแรกๆ)
+                if (count < 10) {
+                    let catColorClass = "bg-slate-800/40 text-slate-400 border-slate-800";
+                    if (serviceCategory === "เช็คระยะ") catColorClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+                    else if (serviceCategory === "ซ่อมทั่วไป") catColorClass = "bg-blue-500/10 text-blue-400 border-blue-500/20";
+                    else if (serviceCategory === "เคลมสี/ตัวถัง") catColorClass = "bg-purple-500/10 text-purple-400 border-purple-500/20";
+                    else if (serviceCategory === "ระบบแอร์") catColorClass = "bg-cyan-500/10 text-cyan-400 border-cyan-500/20";
+                    else if (serviceCategory === "ด่วน/ฉุกเฉิน") catColorClass = "bg-rose-500/10 text-rose-400 border-rose-500/20";
+                    
+                    const catBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium border ${catColorClass}">${escapeHtml(serviceCategory)}</span>`;
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-900/40 transition">
+                            <td class="px-3 py-2"><strong>${escapeHtml(customerName)}</strong><br><span class="text-[10px] text-slate-500">${escapeHtml(customerEmail)}</span></td>
+                            <td class="px-3 py-2 text-slate-300">${escapeHtml(customerPhone || '-')}</td>
+                            <td class="px-3 py-2 text-slate-300">${escapeHtml(carDetails || '-')}</td>
+                            <td class="px-3 py-2 text-slate-300 font-medium">${escapeHtml(serviceTopic)}</td>
+                            <td class="px-3 py-2 text-slate-300">${escapeHtml(targetDate)}</td>
+                            <td class="px-3 py-2">${catBadge}</td>
+                        </tr>
+                    `;
+                }
+                count++;
+            }
+
+            if (count > 10) {
+                tbody.innerHTML += `
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--text-secondary); font-style: italic; background: rgba(255,255,255,0.01);">
+                            ...และรายการอื่นๆ อีก ${count - 10} รายการ...
+                        </td>
+                    </tr>
+                `;
+            }
+
+            if (parsedCSVData.length > 0) {
+                document.getElementById('csv-import-count').innerText = parsedCSVData.length;
+                document.getElementById('csv-preview-area').classList.remove('hidden');
+                document.getElementById('btn-confirm-import').disabled = false;
+                document.getElementById('upload-status-text').innerHTML = `โหลดไฟล์สำเร็จ: <strong class="text-emerald-400">${parsedCSVData.length} รายการ</strong> (คลิกเปลี่ยนไฟล์)`;
+            } else {
+                document.getElementById('csv-preview-area').classList.add('hidden');
+                document.getElementById('btn-confirm-import').disabled = true;
+                document.getElementById('upload-status-text').innerHTML = `<span class="text-rose-500">ไม่พบรายการที่ถูกต้องตามโครงสร้าง</span> (คลิกเพื่อลองใหม่)`;
+            }
+        }
+
+        // ตัวแยกบรรทัด CSV ที่รองรับเครื่องหมายคำพูดคร่อมค่าที่มีจุลภาค
+        function splitCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current.trim());
+            
+            // ลบเครื่องหมายคำพูดรอบนอกถ้ามี
+            return result.map(val => {
+                let v = val;
+                if (v.startsWith('"') && v.endsWith('"')) {
+                    v = v.substring(1, v.length - 1);
+                }
+                return v.replace(/""/g, '"');
+            });
+        }
+
+        // ยืนยันและทำการอัปโหลดข้อมูล CSV ไปที่ GAS API
+        async function submitCSVData() {
+            const url = localStorage.getItem('gas_url');
+            if (!url || parsedCSVData.length === 0) return;
+
+            closeModal('import-modal');
+            setLoader(true, `กำลังร่ายคาถานำเข้าข้อมูล ${parsedCSVData.length} รายการลงสเปรดชีต...`);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'bulkAddSchedules',
+                        schedules: parsedCSVData
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showToast(`นำเข้าคิวงานเรียบร้อยแล้วทั้งหมด ${parsedCSVData.length} รายการ!`, 'success');
+                    // เคลียร์ค่าตัวแปร
+                    parsedCSVData = [];
+                    document.getElementById('csv-file-input').value = '';
+                    document.getElementById('csv-preview-area').classList.add('hidden');
+                    document.getElementById('btn-confirm-import').disabled = true;
+                    document.getElementById('upload-status-text').innerText = 'คลิกเพื่อเลือกไฟล์ CSV หรือลากไฟล์มาวางที่นี่';
+                    
+                    // โหลดข้อมูลล่าสุด
+                    await loadAllData(false);
+                } else {
+                    showToast('การนำเข้าล้มเหลว: ' + result.error, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('การเชื่อมต่อกับ API เพื่อนำเข้าข้อมูลล้มเหลว', 'error');
+            } finally {
+                setLoader(false);
+            }
+        }
+    </script>
 </body>
 </html>
