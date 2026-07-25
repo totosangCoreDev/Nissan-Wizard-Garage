@@ -885,6 +885,269 @@
             font-size: 11px;
             color: var(--text-muted);
         }
+
+        /* --- Helper Classes --- */
+        .mobile-only {
+            display: none !important;
+        }
+
+        /* --- Category Badges --- */
+        .badge-cat {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+        .badge-cat[data-cat="เช็คระยะ"] {
+            background: rgba(16, 185, 129, 0.12);
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+        .badge-cat[data-cat="ซ่อมทั่วไป"] {
+            background: rgba(59, 130, 246, 0.12);
+            color: #60a5fa;
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+        .badge-cat[data-cat="เคลมสี/ตัวถัง"] {
+            background: rgba(139, 92, 246, 0.12);
+            color: #c084fc;
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+        .badge-cat[data-cat="ระบบแอร์"] {
+            background: rgba(6, 182, 212, 0.12);
+            color: #22d3ee;
+            border-color: rgba(6, 182, 212, 0.2);
+        }
+        .badge-cat[data-cat="ด่วน/ฉุกเฉิน"] {
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+        .badge-cat[data-cat="ทั่วไป/อื่นๆ"] {
+            background: rgba(156, 163, 175, 0.12);
+            color: #d1d5db;
+            border-color: rgba(156, 163, 175, 0.2);
+        }
+
+        /* --- CSV Export & Import Buttons Style --- */
+        .btn-csv {
+            background: rgba(59, 130, 246, 0.08);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: var(--color-info);
+        }
+        .btn-csv:hover {
+            background: var(--color-info);
+            color: #000;
+            border-color: var(--color-info);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+
+        /* --- CSV Preview Table --- */
+        .csv-preview-container {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-top: 15px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .csv-preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        .csv-preview-table th, .csv-preview-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: left;
+        }
+        .csv-preview-table th {
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text-secondary);
+            position: sticky;
+            top: 0;
+        }
+
+        /* --- Responsive Styles (max-width: 768px) --- */
+        @media (max-width: 768px) {
+            .desktop-only {
+                display: none !important;
+            }
+            .mobile-only {
+                display: block !important;
+            }
+            nav#main-nav {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(13, 18, 33, 0.96);
+                backdrop-filter: blur(10px);
+                border-top: 1px solid var(--border-color);
+                display: flex !important;
+                justify-content: space-around;
+                align-items: center;
+                padding: 10px 0;
+                z-index: 999;
+                gap: 0;
+                box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+            }
+            nav#main-nav .nav-btn {
+                background: none;
+                border: none;
+                flex-direction: column;
+                gap: 4px;
+                font-size: 11px;
+                padding: 5px;
+                border-radius: 0;
+                box-shadow: none !important;
+                flex: 1;
+                justify-content: center;
+            }
+            nav#main-nav .nav-btn.active {
+                background: none;
+                color: var(--color-magic);
+                border-color: transparent;
+            }
+            nav#main-nav .nav-btn i {
+                font-size: 18px;
+            }
+            body {
+                padding-bottom: 75px;
+            }
+
+            /* Mobile Schedule Cards Layout */
+            .cards-container {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                margin-bottom: 30px;
+            }
+            .schedule-card {
+                background: var(--bg-card);
+                backdrop-filter: blur(12px);
+                border: 1px solid var(--border-color);
+                border-radius: 14px;
+                padding: 18px;
+                transition: var(--transition-smooth);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .schedule-card:hover {
+                background: var(--bg-card-hover);
+                border-color: rgba(249, 115, 22, 0.2);
+            }
+            .schedule-card .card-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+                padding-bottom: 12px;
+                margin-bottom: 12px;
+            }
+            .schedule-card .card-title-group {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+            .schedule-card .cust-name {
+                font-size: 16px;
+                font-weight: 600;
+                color: var(--text-primary);
+            }
+            .schedule-card .card-body {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                font-size: 13px;
+                color: var(--text-secondary);
+            }
+            .schedule-card .info-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 10px;
+            }
+            .schedule-card .info-label {
+                color: var(--text-muted);
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                white-space: nowrap;
+            }
+            .schedule-card .info-val {
+                text-align: right;
+                word-break: break-word;
+                color: var(--text-primary);
+            }
+            .schedule-card .phone-link {
+                color: var(--color-magic);
+                text-decoration: none;
+                background: rgba(245, 158, 11, 0.1);
+                padding: 2px 8px;
+                border-radius: 4px;
+                border: 1px solid rgba(245, 158, 11, 0.2);
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+            }
+            .schedule-card .phone-link:hover {
+                background: var(--color-magic);
+                color: #000;
+            }
+            .schedule-card .card-actions {
+                margin-top: 15px;
+                padding-top: 12px;
+                border-top: 1px solid rgba(255, 255, 255, 0.06);
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+            .schedule-card .card-actions .btn-test-send {
+                width: 100%;
+                justify-content: center;
+                padding: 10px;
+                font-weight: 500;
+            }
+            .schedule-card .edit-delete-btns {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .schedule-card .edit-delete-btns .btn-action {
+                width: 100%;
+                justify-content: center;
+                padding: 8px;
+            }
+
+            /* Keypad & Form Adjustments */
+            .auth-card {
+                padding: 25px 20px;
+            }
+            .keypad {
+                gap: 10px;
+                max-width: 220px;
+            }
+            .keypad-btn {
+                width: 52px;
+                height: 52px;
+                font-size: 18px;
+            }
+            .container {
+                padding: 10px;
+            }
+            header {
+                margin-bottom: 15px;
+            }
+            .card-form {
+                padding: 20px 15px;
+            }
+            .modal-content {
+                padding: 20px 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1016,14 +1279,31 @@
                         <option value="Pending">รอดำเนินการ (Pending)</option>
                         <option value="Sent">ส่งแล้ว (Sent)</option>
                     </select>
+                    <select class="filter-select" id="filter-category" onchange="renderSchedules()">
+                        <option value="all">แสดงทุกประเภทงาน</option>
+                        <option value="เช็คระยะ">เช็คระยะ</option>
+                        <option value="ซ่อมทั่วไป">ซ่อมทั่วไป</option>
+                        <option value="เคลมสี/ตัวถัง">เคลมสี/ตัวถัง</option>
+                        <option value="ระบบแอร์">ระบบแอร์</option>
+                        <option value="ด่วน/ฉุกเฉิน">ด่วน/ฉุกเฉิน</option>
+                        <option value="ทั่วไป/อื่นๆ">ทั่วไป/อื่นๆ</option>
+                    </select>
                     <button class="nav-btn" onclick="loadAllData(false, true)" style="padding: 10px 15px;">
                         <i class="fa-solid fa-rotate" id="icon-refresh"></i> รีเฟรชข้อมูล
                     </button>
                 </div>
+                <div class="filter-group" style="gap: 8px;">
+                    <button class="nav-btn btn-csv" onclick="openModal('import-modal')">
+                        <i class="fa-solid fa-file-import"></i> นำเข้า CSV
+                    </button>
+                    <button class="nav-btn btn-csv" onclick="exportToCSV()">
+                        <i class="fa-solid fa-file-export"></i> ส่งออก CSV
+                    </button>
+                </div>
             </div>
 
-            <!-- ตารางแสดงผลคิวงาน -->
-            <div class="table-container">
+            <!-- ตารางแสดงผลคิวงาน (Desktop Only) -->
+            <div class="table-container desktop-only">
                 <table>
                     <thead>
                         <tr>
@@ -1045,6 +1325,14 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- การ์ดแสดงผลคิวงานสำหรับมือถือ (Mobile Only) -->
+            <div class="cards-container mobile-only" id="schedules-cards-div">
+                <div class="empty-state" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 40px 20px;">
+                    <i class="fa-solid fa-circle-nodes" style="font-size: 36px; margin-bottom: 12px; color: var(--text-muted);"></i>
+                    <p>ไม่พบข้อมูลตารางคิวงาน กรุณาตั้งค่า GAS API และรีเฟรชข้อมูล</p>
+                </div>
             </div>
         </div>
 
@@ -1090,6 +1378,18 @@
                                 <option value="ตรวจสภาพทั่วไปก่อนเดินทางไกล">
                                 <option value="ตรวจเช็คระบบแอร์ ล้างตู้แอร์">
                             </datalist>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">ประเภทงานบริการ <span style="color: var(--color-danger)">*</span></label>
+                            <select class="form-input" id="service-cat" required onchange="updateLivePreview()">
+                                <option value="ทั่วไป/อื่นๆ" selected>ทั่วไป/อื่นๆ</option>
+                                <option value="เช็คระยะ">เช็คระยะ (บำรุงรักษา)</option>
+                                <option value="ซ่อมทั่วไป">ซ่อมทั่วไป (เครื่องยนต์/ไฟ)</option>
+                                <option value="เคลมสี/ตัวถัง">เคลมสี/ตัวถัง</option>
+                                <option value="ระบบแอร์">ระบบแอร์</option>
+                                <option value="ด่วน/ฉุกเฉิน">ด่วน/ฉุกเฉิน</option>
+                            </select>
                         </div>
 
                         <div class="form-group">
@@ -1262,6 +1562,18 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="form-label">ประเภทงานบริการ <span style="color: var(--color-danger)">*</span></label>
+                    <select class="form-input" id="edit-cat" required>
+                        <option value="ทั่วไป/อื่นๆ">ทั่วไป/อื่นๆ</option>
+                        <option value="เช็คระยะ">เช็คระยะ (บำรุงรักษา)</option>
+                        <option value="ซ่อมทั่วไป">ซ่อมทั่วไป (เครื่องยนต์/ไฟ)</option>
+                        <option value="เคลมสี/ตัวถัง">เคลมสี/ตัวถัง</option>
+                        <option value="ระบบแอร์">ระบบแอร์</option>
+                        <option value="ด่วน/ฉุกเฉิน">ด่วน/ฉุกเฉิน</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label class="form-label">วันเดือนปี ครบกำหนด <span style="color: var(--color-danger)">*</span></label>
                     <input type="date" class="form-input" id="edit-target-date" required>
                 </div>
@@ -1313,6 +1625,59 @@
                 <button type="button" class="btn-action" onclick="closeModal('delete-modal')" style="padding: 10px 20px;">ยกเลิก</button>
                 <button type="button" class="btn-action" onclick="confirmDeleteSchedule()" style="background: var(--color-danger); color: #fff; border-color: var(--color-danger); padding: 10px 20px;">
                     <i class="fa-solid fa-trash-can"></i> ลบรายการ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal นำเข้าข้อมูลด้วย CSV (CSV Import Modal) -->
+    <div class="modal" id="import-modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-file-import"></i> นำเข้าข้อมูลลูกค้าด้วยไฟล์ CSV</h3>
+                <button class="modal-close" onclick="closeModal('import-modal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 15px; line-height: 1.5;">
+                <p>เลือกไฟล์ CSV ที่ต้องการนำเข้า โดยโครงสร้างคอลัมน์ของไฟล์ต้องเป็นดังนี้:</p>
+                <div style="background: rgba(255,255,255,0.03); padding: 8px 12px; border-radius: 6px; font-family: monospace; font-size: 11px; margin-top: 8px; border: 1px solid var(--border-color); overflow-x: auto; white-space: nowrap;">
+                    ชื่อลูกค้า, อีเมล, เบอร์โทร, รุ่นรถ, เรื่องบริการ, วันกำหนด(YYYY-MM-DD), ล่วงหน้า(ตัวเลข), หน่วยแจ้ง(days/months), ประเภทงาน
+                </div>
+                <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 11px;">* แนะนำให้ดาวน์โหลดไฟล์เทมเพลตไปกรอกข้อมูลเพื่อความถูกต้อง</span>
+                    <a href="#" onclick="downloadCSVTemplate(event)" style="color: var(--color-magic); font-weight: 500; text-decoration: none; font-size: 12px;"><i class="fa-solid fa-download"></i> ดาวน์โหลดตัวอย่าง CSV</a>
+                </div>
+            </div>
+            
+            <div class="form-group" style="border: 2px dashed rgba(255,255,255,0.1); border-radius: 8px; padding: 20px; text-align: center; background: rgba(0,0,0,0.1); position: relative; cursor: pointer;" onclick="document.getElementById('csv-file-input').click()">
+                <i class="fa-solid fa-cloud-arrow-up" style="font-size: 32px; color: var(--color-magic); margin-bottom: 10px;"></i>
+                <p id="upload-status-text" style="font-size: 13px; color: var(--text-primary);">คลิกเพื่อเลือกไฟล์ CSV หรือลากไฟล์มาวางที่นี่</p>
+                <input type="file" id="csv-file-input" accept=".csv" style="display: none;" onchange="handleCSVFileSelect(event)">
+            </div>
+
+            <!-- กล่องพรีวิวรายการจาก CSV -->
+            <div id="csv-preview-area" style="display: none;">
+                <h4 style="font-size: 13px; font-weight: 600; margin-top: 15px; color: var(--color-magic);"><i class="fa-solid fa-list"></i> พรีวิวข้อมูลที่จะนำเข้า (<span id="csv-import-count">0</span> รายการ)</h4>
+                <div class="csv-preview-container">
+                    <table class="csv-preview-table">
+                        <thead>
+                            <tr>
+                                <th>ชื่อลูกค้า</th>
+                                <th>เบอร์โทร</th>
+                                <th>รุ่นรถ</th>
+                                <th>บริการ</th>
+                                <th>วันครบกำหนด</th>
+                                <th>ประเภท</th>
+                            </tr>
+                        </thead>
+                        <tbody id="csv-preview-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-actions" style="margin-top: 20px;">
+                <button type="button" class="btn-action" onclick="closeModal('import-modal')">ยกเลิก</button>
+                <button type="button" id="btn-confirm-import" class="btn-action btn-test-send" style="background: var(--color-magic); color: #000; font-weight: 500;" disabled onclick="submitCSVData()">
+                    <i class="fa-solid fa-check"></i> ยืนยันการนำเข้าข้อมูล
                 </button>
             </div>
         </div>
@@ -1787,6 +2152,7 @@
             const targetDate = document.getElementById('target-date').value;
             const val = document.getElementById('notice-value').value;
             const unit = document.getElementById('notice-unit').value;
+            const serviceCategory = document.getElementById('service-cat').value;
 
             // แปลงหน่วยล่วงหน้าสำหรับส่งแอปสคริปต์
             const noticeDays = unit === 'days' ? val : 0;
@@ -1806,7 +2172,8 @@
                         serviceTopic,
                         targetDate,
                         noticeDays,
-                        noticeMonths
+                        noticeMonths,
+                        serviceCategory
                     })
                 });
 
@@ -1817,6 +2184,7 @@
                     // ตั้งค่าล่วงหน้าคืนค่า
                     document.getElementById('notice-value').value = '7';
                     document.getElementById('notice-unit').value = 'days';
+                    document.getElementById('service-cat').value = 'ทั่วไป/อื่นๆ';
                     
                     // อัปโหลดข้อมูลใหม่และสลับไปหน้าแดชบอร์ด (โหลดแบบเบื้องหลัง)
                     await loadAllData(false);
@@ -1836,7 +2204,9 @@
         function renderSchedules() {
             const query = document.getElementById('search-query').value.toLowerCase().trim();
             const filterStatus = document.getElementById('filter-status').value;
+            const filterCategory = document.getElementById('filter-category').value;
             const tbody = document.getElementById('schedules-tbody');
+            const cardsDiv = document.getElementById('schedules-cards-div');
             
             // กรองข้อมูล
             const filtered = allSchedules.filter(item => {
@@ -1847,8 +2217,9 @@
                     item.serviceTopic.toLowerCase().includes(query);
                 
                 const matchesStatus = filterStatus === 'all' || item.status === filterStatus;
+                const matchesCategory = filterCategory === 'all' || item.serviceCategory === filterCategory;
                 
-                return matchesSearch && matchesStatus;
+                return matchesSearch && matchesStatus && matchesCategory;
             });
 
             // คำนวณสถิติ
@@ -1865,7 +2236,7 @@
             document.getElementById('stat-sent').innerText = sent;
             document.getElementById('stat-today').innerText = todayOrOverdue;
 
-            // แสดงรายการลงในตาราง
+            // แสดงรายการลงในตารางและการ์ดมือถือ
             if (filtered.length === 0) {
                 tbody.innerHTML = `
                     <tr>
@@ -1875,20 +2246,31 @@
                         </td>
                     </tr>
                 `;
+                cardsDiv.innerHTML = `
+                    <div class="empty-state" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 40px 20px;">
+                        <i class="fa-solid fa-folder-open" style="font-size: 36px; margin-bottom: 12px; color: var(--text-muted);"></i>
+                        <p>${allSchedules.length === 0 ? 'ยังไม่มีคิวลงทะเบียนในระบบ' : 'ไม่พบคิวที่ค้นหาตามเงื่อนไข'}</p>
+                    </div>
+                `;
                 return;
             }
 
             tbody.innerHTML = '';
+            cardsDiv.innerHTML = '';
             filtered.forEach(item => {
                 const statusBadge = item.status === 'Sent' 
                     ? '<span class="badge badge-sent"><i class="fa-solid fa-circle-check"></i> ส่งแล้ว</span>'
                     : '<span class="badge badge-pending"><i class="fa-solid fa-hourglass-start"></i> รอดำเนินการ</span>';
                 
+                const catText = item.serviceCategory || 'ทั่วไป/อื่นๆ';
+                const catBadge = `<span class="badge-cat" data-cat="${escapeHtml(catText)}">${escapeHtml(catText)}</span>`;
+
                 // แจ้งล่วงหน้าอย่างไร
                 let noticeText = '-';
                 if (item.noticeDays > 0) noticeText = `ล่วงหน้า ${item.noticeDays} วัน`;
                 if (item.noticeMonths > 0) noticeText = `ล่วงหน้า ${item.noticeMonths} เดือน`;
 
+                // Desktop Row
                 tbody.innerHTML += `
                     <tr>
                         <td>
@@ -1900,7 +2282,10 @@
                         </td>
                         <td>${escapeHtml(item.carDetails || '-')}</td>
                         <td>
-                            <strong style="color: var(--text-primary);">${escapeHtml(item.serviceTopic)}</strong>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <strong style="color: var(--text-primary);">${escapeHtml(item.serviceTopic)}</strong>
+                                ${catBadge}
+                            </div>
                             <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">ตั้งแจ้ง: ${noticeText}</div>
                         </td>
                         <td><i class="fa-solid fa-calendar-day" style="color: var(--color-nissan);"></i> ${toThaiDateString(item.targetDate)}</td>
@@ -1920,6 +2305,63 @@
                             </div>
                         </td>
                     </tr>
+                `;
+
+                // Mobile Card
+                cardsDiv.innerHTML += `
+                    <div class="schedule-card">
+                        <div class="card-header">
+                            <div class="card-title-group">
+                                <span class="cust-name">${escapeHtml(item.customerName)}</span>
+                                <div style="display: flex; gap: 6px; margin-top: 4px;">
+                                    ${statusBadge}
+                                    ${catBadge}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-row">
+                                <span class="info-label"><i class="fa-solid fa-car"></i> รถยนต์:</span>
+                                <span class="info-val">${escapeHtml(item.carDetails || '-')}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fa-solid fa-wrench"></i> บริการ:</span>
+                                <span class="info-val"><strong>${escapeHtml(item.serviceTopic)}</strong></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fa-solid fa-calendar-day"></i> วันครบกำหนดนัด:</span>
+                                <span class="info-val">${toThaiDateString(item.targetDate)}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fa-solid fa-envelope-open"></i> วันส่งแจ้งเตือน:</span>
+                                <span class="info-val">${toThaiDateString(item.scheduledSendDate)}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label"><i class="fa-solid fa-clock"></i> ตั้งเตือนล่วงหน้า:</span>
+                                <span class="info-val">${noticeText}</span>
+                            </div>
+                            <div class="info-row" style="margin-top: 4px; align-items: flex-start;">
+                                <span class="info-label"><i class="fa-solid fa-address-book"></i> ติดต่อ:</span>
+                                <span class="info-val">
+                                    ${item.customerPhone ? `<a href="tel:${item.customerPhone}" class="phone-link"><i class="fa-solid fa-phone"></i> ${formatPhoneNumber(item.customerPhone)}</a>` : '-'}
+                                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;"><i class="fa-solid fa-envelope"></i> ${escapeHtml(item.customerEmail)}</div>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-action btn-test-send" onclick="sendTestEmail('${item.id}', '${escapeJS(item.customerName)}')" title="ส่งเมลทันที">
+                                <i class="fa-solid fa-paper-plane"></i> ส่งทดสอบแจ้งเตือนทันที
+                            </button>
+                            <div class="edit-delete-btns">
+                                <button class="btn-action btn-edit" onclick="openEditModal('${item.id}')" title="แก้ไขคิว">
+                                    <i class="fa-solid fa-pen-to-square"></i> แก้ไขข้อมูล
+                                </button>
+                                <button class="btn-action btn-delete" onclick="openDeleteModal('${item.id}', '${escapeJS(item.customerName)}')" title="ลบคิว">
+                                    <i class="fa-solid fa-trash-can"></i> ลบรายการ
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 `;
             });
         }
@@ -1966,6 +2408,7 @@
             document.getElementById('edit-phone').value = formatPhoneNumber(item.customerPhone) || '';
             document.getElementById('edit-car').value = item.carDetails || '';
             document.getElementById('edit-topic').value = item.serviceTopic;
+            document.getElementById('edit-cat').value = item.serviceCategory || 'ทั่วไป/อื่นๆ';
             document.getElementById('edit-target-date').value = item.targetDate;
 
             // แยกวิเคราะห์การแจ้งเตือน
@@ -2001,6 +2444,7 @@
             const customerPhone = document.getElementById('edit-phone').value;
             const carDetails = document.getElementById('edit-car').value;
             const serviceTopic = document.getElementById('edit-topic').value;
+            const serviceCategory = document.getElementById('edit-cat').value;
             const targetDate = document.getElementById('edit-target-date').value;
             const val = document.getElementById('edit-notice-value').value;
             const unit = document.getElementById('edit-notice-unit').value;
@@ -2023,6 +2467,7 @@
                         customerPhone,
                         carDetails,
                         serviceTopic,
+                        serviceCategory,
                         targetDate,
                         noticeDays,
                         noticeMonths,
@@ -2109,6 +2554,237 @@
             } catch (err) {
                 console.error(err);
                 showToast('พบข้อผิดพลาดในการเรียกส่งเมลทันที', 'error');
+            } finally {
+                setLoader(false);
+            }
+        }
+
+        // --- ระบบส่งออกและนำเข้าไฟล์ CSV (CSV Controller) ---
+
+        // ส่งออกข้อมูลในตารางเป็น CSV (ภาษาไทยเปิดใน Excel ได้ถูกต้อง)
+        function exportToCSV() {
+            if (allSchedules.length === 0) {
+                showToast('ไม่มีข้อมูลที่จะส่งออก', 'warning');
+                return;
+            }
+
+            let csvContent = "\uFEFF"; // UTF-8 BOM สำหรับป้องกันภาษาไทยเพี้ยนใน Excel
+            // Headers
+            csvContent += "ชื่อลูกค้า,อีเมล,เบอร์โทรศัพท์,รุ่นรถ/ทะเบียน,เรื่องบริการ,วันกำหนดนัด,วันแจ้งเตือน,ประเภทงาน,สถานะ\n";
+
+            allSchedules.forEach(item => {
+                const name = `"${item.customerName.replace(/"/g, '""')}"`;
+                const email = `"${item.customerEmail.replace(/"/g, '""')}"`;
+                const phone = `"${(item.customerPhone || '').replace(/"/g, '""')}"`;
+                const car = `"${(item.carDetails || '').replace(/"/g, '""')}"`;
+                const topic = `"${item.serviceTopic.replace(/"/g, '""')}"`;
+                const target = `"${item.targetDate}"`;
+                const send = `"${item.scheduledSendDate}"`;
+                const cat = `"${(item.serviceCategory || 'ทั่วไป/อื่นๆ').replace(/"/g, '""')}"`;
+                const status = `"${item.status}"`;
+
+                csvContent += `${name},${email},${phone},${car},${topic},${target},${send},${cat},${status}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Nissan_Wizard_Schedules_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('ส่งออกไฟล์ CSV สำเร็จ!', 'success');
+        }
+
+        // ดาวน์โหลดไฟล์เทมเพลต CSV
+        function downloadCSVTemplate(e) {
+            if (e) e.preventDefault();
+            let csvContent = "\uFEFF"; // UTF-8 BOM
+            csvContent += "ชื่อลูกค้า,อีเมล,เบอร์โทรศัพท์,รุ่นรถ/ทะเบียน,เรื่องบริการ,วันกำหนดนัด(YYYY-MM-DD),ตั้งล่วงหน้า(ตัวเลข),หน่วยแจ้ง(days/months),ประเภทงาน\n";
+            csvContent += "สมชาย ใจดี,somchai@gmail.com,0812345678,Nissan Almera กข-1234 กทม.,เปลี่ยนน้ำมันเครื่อง,2026-08-15,7,days,เช็คระยะ\n";
+            csvContent += "สมหญิง รักดี,somying@gmail.com,0898765432,Nissan Navara 3กข-5678,เปลี่ยนสายพานแอร์,2026-09-01,1,months,ระบบแอร์\n";
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "Nissan_Wizard_Import_Template.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        let parsedCSVData = [];
+
+        // เลือกไฟล์ CSV และทำการพาร์ส
+        function handleCSVFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                parseCSV(text);
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        // ฟังก์ชันช่วยพาร์ส CSV
+        function parseCSV(text) {
+            parsedCSVData = [];
+            const lines = text.split(/\r\n|\n/);
+            if (lines.length <= 1) {
+                showToast('ไฟล์ CSV ว่างเปล่าหรือรูปแบบไม่ถูกต้อง', 'error');
+                return;
+            }
+
+            const headerLine = lines[0].replace(/^\uFEFF/, ''); // ลบ BOM
+            
+            const tbody = document.getElementById('csv-preview-tbody');
+            tbody.innerHTML = '';
+
+            let count = 0;
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                const columns = splitCSVLine(line);
+                if (columns.length < 5) continue; // อย่างน้อยต้องมี ชื่อ อีเมล เรื่องนัด วันนัด
+
+                // คอลัมน์เทมเพลต: 
+                // 0: ชื่อลูกค้า, 1: อีเมล, 2: เบอร์โทร, 3: รุ่นรถ, 4: เรื่องบริการ, 5: วันกำหนดนัด(YYYY-MM-DD), 6: ล่วงหน้า(ตัวเลข), 7: หน่วยแจ้ง(days/months), 8: ประเภทงาน
+                const customerName = columns[0] || '';
+                const customerEmail = columns[1] || '';
+                const customerPhone = columns[2] || '';
+                const carDetails = columns[3] || '';
+                const serviceTopic = columns[4] || '';
+                const targetDate = columns[5] || '';
+                const noticeVal = columns[6] || '7';
+                const noticeUnit = columns[7] || 'days';
+                const serviceCategory = columns[8] || 'ทั่วไป/อื่นๆ';
+
+                if (!customerName || !customerEmail || !serviceTopic || !targetDate) {
+                    continue; // ข้อมูลที่จำเป็นขาดหายไป
+                }
+
+                const noticeDays = noticeUnit === 'days' ? parseInt(noticeVal) || 0 : 0;
+                const noticeMonths = noticeUnit === 'months' ? parseInt(noticeVal) || 0 : 0;
+
+                parsedCSVData.push({
+                    customerName,
+                    customerEmail,
+                    customerPhone,
+                    carDetails,
+                    serviceTopic,
+                    targetDate,
+                    noticeDays,
+                    noticeMonths,
+                    serviceCategory
+                });
+
+                // แสดงพรีวิว (แถวแรกๆ)
+                if (count < 10) {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${escapeHtml(customerName)}</strong><br><span style="font-size: 10px; color: var(--text-muted);">${escapeHtml(customerEmail)}</span></td>
+                            <td>${escapeHtml(customerPhone || '-')}</td>
+                            <td>${escapeHtml(carDetails || '-')}</td>
+                            <td>${escapeHtml(serviceTopic)}</td>
+                            <td>${escapeHtml(targetDate)}</td>
+                            <td><span class="badge-cat" data-cat="${escapeHtml(serviceCategory)}">${escapeHtml(serviceCategory)}</span></td>
+                        </tr>
+                    `;
+                }
+                count++;
+            }
+
+            if (count > 10) {
+                tbody.innerHTML += `
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--text-secondary); font-style: italic; background: rgba(255,255,255,0.01);">
+                            ...และรายการอื่นๆ อีก ${count - 10} รายการ...
+                        </td>
+                    </tr>
+                `;
+            }
+
+            if (parsedCSVData.length > 0) {
+                document.getElementById('csv-import-count').innerText = parsedCSVData.length;
+                document.getElementById('csv-preview-area').style.display = 'block';
+                document.getElementById('btn-confirm-import').disabled = false;
+                document.getElementById('upload-status-text').innerHTML = `โหลดไฟล์สำเร็จ: <strong style="color: var(--color-success);">${parsedCSVData.length} รายการ</strong> (คลิกเปลี่ยนไฟล์)`;
+            } else {
+                document.getElementById('csv-preview-area').style.display = 'none';
+                document.getElementById('btn-confirm-import').disabled = true;
+                document.getElementById('upload-status-text').innerHTML = `<span style="color: var(--color-danger);">ไม่พบรายการที่ถูกต้องตามโครงสร้าง</span> (คลิกเพื่อลองใหม่)`;
+            }
+        }
+
+        // ตัวแยกบรรทัด CSV ที่รองรับเครื่องหมายคำพูดคร่อมค่าที่มีจุลภาค
+        function splitCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current.trim());
+            
+            // ลบเครื่องหมายคำพูดรอบนอกถ้ามี
+            return result.map(val => {
+                let v = val;
+                if (v.startsWith('"') && v.endsWith('"')) {
+                    v = v.substring(1, v.length - 1);
+                }
+                return v.replace(/""/g, '"');
+            });
+        }
+
+        // ยืนยันและทำการอัปโหลดข้อมูล CSV ไปที่ GAS API
+        async function submitCSVData() {
+            const url = localStorage.getItem('gas_url');
+            if (!url || parsedCSVData.length === 0) return;
+
+            closeModal('import-modal');
+            setLoader(true, `กำลังร่ายคาถานำเข้าข้อมูล ${parsedCSVData.length} รายการลงสเปรดชีต...`);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'bulkAddSchedules',
+                        schedules: parsedCSVData
+                    })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    showToast(`นำเข้าคิวงานเรียบร้อยแล้วทั้งหมด ${parsedCSVData.length} รายการ!`, 'success');
+                    // เคลียร์ค่าตัวแปร
+                    parsedCSVData = [];
+                    document.getElementById('csv-file-input').value = '';
+                    document.getElementById('csv-preview-area').style.display = 'none';
+                    document.getElementById('btn-confirm-import').disabled = true;
+                    document.getElementById('upload-status-text').innerText = 'คลิกเพื่อเลือกไฟล์ CSV หรือลากไฟล์มาวางที่นี่';
+                    
+                    // โหลดข้อมูลล่าสุด
+                    await loadAllData(false);
+                } else {
+                    showToast('การนำเข้าล้มเหลว: ' + result.error, 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('การเชื่อมต่อกับ API เพื่อนำเข้าข้อมูลล้มเหลว', 'error');
             } finally {
                 setLoader(false);
             }
